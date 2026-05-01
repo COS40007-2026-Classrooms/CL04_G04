@@ -1,0 +1,17 @@
+# Core scientific stack
+numpy
+pandas
+scipy
+
+# Machine learning
+scikit-learn
+
+# Data storage
+h5py
+
+# Visualisation
+matplotlib
+
+# Standard library modules (no install needed):
+# datetime, pathlib, os, sys, json, argparse, warnings,
+# gc, pickle, re, uuid, urllib
