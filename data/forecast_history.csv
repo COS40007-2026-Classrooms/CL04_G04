@@ -1,0 +1,2 @@
+forecast_date,run_timestamp,ulp91_current_cpl,ulp91_forecast_cpl,ulp91_change_cpl,ulp95_current_cpl,ulp95_forecast_cpl,ulp95_change_cpl,diesel_current_cpl,diesel_forecast_cpl,diesel_change_cpl
+2026-05-01,2026-05-01T16:09:17.082353,180.9,171.9,-9.0,195.9,188.9,-7.0,253.5,258.4,4.9

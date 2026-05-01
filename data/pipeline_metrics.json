@@ -1,0 +1,13 @@
+{
+  "run_timestamp": "2026-05-01T16:09:17.089879",
+  "threshold_passed": true,
+  "retrain_attempted": true,
+  "retrain_success": true,
+  "dry_run": false,
+  "thresholds": {
+    "mape_max": 3.0,
+    "da_min": 55.0,
+    "mae_max_cpl": 6.0
+  },
+  "accuracy": {}
+}

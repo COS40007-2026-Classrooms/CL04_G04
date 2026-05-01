@@ -1,0 +1,47 @@
+====================================================================
+  VIC FUEL PRICE FORECAST  --  1-WEEK AHEAD
+====================================================================
+  Generated : 01 May 2026 16:09
+  Model     : Ridge Regression (alpha=1.0)
+  CV method : TimeSeriesSplit (5 folds)
+  Data seed : Victoria Servo Saver API (live station data)
+  Target    : Melbourne retail pump price (cpl)
+
+--------------------------------------------------------------------
+  1-WEEK PRICE FORECAST
+--------------------------------------------------------------------
+
+  Fuel        Current cpl  Forecast cpl   Change  Week
+  --------------------------------------------------------------------
+  ULP91             180.9         171.9     -9.0  v 2026-05-08 to 2026-05-14
+  ULP95             195.9         188.9     -7.0  v 2026-05-08 to 2026-05-14
+  DIESEL            253.5         258.4     +4.9  ^ 2026-05-08 to 2026-05-14
+
+  * Excise cut of 32 cpl active 1 Apr - 30 Jun 2026
+    Underlying prices are ~32 cpl higher without the cut
+--------------------------------------------------------------------
+  MODEL ACCURACY
+--------------------------------------------------------------------
+
+  Fuel      MAPE%  MAE cpl    RMSE      R2    DA%     F1  TheilsU  CV_MAPE%   CV_R2
+  --------------------------------------------------------------------
+  ULP91      1.77      3.5     8.9  0.3700   61.0 0.9794   0.8765     1.78%  0.8014
+  ULP95      1.18      2.6     9.0  0.3247   61.0 0.9667   0.8836     1.34%  0.7932
+  DIESEL     1.32      3.1    13.8  0.5808   61.0 0.9667   0.9899     1.25%  0.8655
+--------------------------------------------------------------------
+  DATA SOURCES
+--------------------------------------------------------------------
+
+  PRIMARY   Service Victoria Fair Fuel Open Data API
+            https://api.fuel.service.vic.gov.au/open-data/v1/fuel/prices
+            Header: x-consumer-id (your Consumer ID)
+            Free key: service.vic.gov.au/find-services/transport-and-driving/
+                      servo-saver/help-centre/servo-saver-public-api
+
+  FALLBACK  ACCC weekly PDF (drop in script folder, published Fridays)
+            accc.gov.au/consumers/petrol-and-fuel/petrol-prices-in-2026
+            Parser requires: pip install pdfplumber
+
+  TRAINING  APS quarterly Q1 2010 - Q4 2025 (64 quarters)
+
+====================================================================
