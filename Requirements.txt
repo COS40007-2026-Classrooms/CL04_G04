@@ -2,6 +2,7 @@
 numpy
 pandas
 scipy
+tensorflow
 
 # Machine learning
 scikit-learn
