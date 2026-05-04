@@ -1,4 +1,4 @@
-Group CL04_G04
+Group CL04_G04 TEST
 
 Members
 
