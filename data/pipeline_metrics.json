@@ -1,9 +1,9 @@
 {
-  "run_timestamp": "2026-05-03T11:56:31.880455",
+  "run_timestamp": "2026-05-04T22:37:59.380313",
   "threshold_passed": true,
   "retrain_attempted": true,
   "retrain_success": true,
-  "dry_run": true,
+  "dry_run": false,
   "thresholds": {
     "mape_max": 3.0,
     "da_min": 55.0,
