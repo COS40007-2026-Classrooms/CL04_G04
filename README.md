@@ -4,7 +4,7 @@ Members
 
 *Soad
 
-*Amiru
+Amiru Adhikari - 105522350
 
 *Gia
 
