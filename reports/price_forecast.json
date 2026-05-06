@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-04T22:37:58.597815",
+  "generated_at": "2026-05-06T13:10:10.437944",
   "data_seed": "Victoria Servo Saver API (live station data)",
   "excise_cut_active": true,
   "excise_cut_cpl": 32.0,
@@ -7,31 +7,31 @@
   "forecasts": {
     "ulp91": {
       "fuel_type": "ULP91",
-      "forecast_date": "2026-05-11",
-      "week_end": "2026-05-17",
-      "pred_price_cpl": 186.3,
-      "last_actual_cpl": 179.9,
-      "change_cpl": 6.4,
+      "forecast_date": "2026-05-13",
+      "week_end": "2026-05-19",
+      "pred_price_cpl": 181.4,
+      "last_actual_cpl": 179.7,
+      "change_cpl": 1.7,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     },
     "ulp95": {
       "fuel_type": "ULP95",
-      "forecast_date": "2026-05-11",
-      "week_end": "2026-05-17",
-      "pred_price_cpl": 200.6,
-      "last_actual_cpl": 195.9,
-      "change_cpl": 4.7,
+      "forecast_date": "2026-05-13",
+      "week_end": "2026-05-19",
+      "pred_price_cpl": 194.9,
+      "last_actual_cpl": 194.9,
+      "change_cpl": -0.0,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     },
     "diesel": {
       "fuel_type": "DIESEL",
-      "forecast_date": "2026-05-11",
-      "week_end": "2026-05-17",
-      "pred_price_cpl": 256.7,
-      "last_actual_cpl": 250.9,
-      "change_cpl": 5.8,
+      "forecast_date": "2026-05-13",
+      "week_end": "2026-05-19",
+      "pred_price_cpl": 254.8,
+      "last_actual_cpl": 249.9,
+      "change_cpl": 4.9,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     }
@@ -39,62 +39,62 @@
   "metrics": {
     "ulp91": {
       "holdout": {
-        "mae": 3.564,
-        "rmse": 8.955,
-        "mape": 1.805,
-        "r2": 0.3655,
-        "da": 61.79,
-        "f1": 0.9794,
-        "pearson_r": 0.6735,
-        "theils_u": 0.8769,
-        "within_2pct": 83.06,
-        "within_5pct": 95.97
+        "mae": 3.461,
+        "rmse": 8.939,
+        "mape": 1.752,
+        "r2": 0.3666,
+        "da": 62.6,
+        "f1": 0.9752,
+        "pearson_r": 0.6699,
+        "theils_u": 0.8806,
+        "within_2pct": 85.48,
+        "within_5pct": 95.16
       },
       "cv": {
-        "mape_mean": 1.769,
-        "mape_std": 0.214,
-        "r2_mean": 0.801,
-        "r2_std": 0.2025
+        "mape_mean": 1.779,
+        "mape_std": 0.217,
+        "r2_mean": 0.8016,
+        "r2_std": 0.2027
       }
     },
     "ulp95": {
       "holdout": {
-        "mae": 2.771,
-        "rmse": 9.178,
-        "mape": 1.266,
-        "r2": 0.3056,
-        "da": 60.16,
-        "f1": 0.9623,
-        "pearson_r": 0.6546,
-        "theils_u": 0.894,
+        "mae": 2.806,
+        "rmse": 9.218,
+        "mape": 1.286,
+        "r2": 0.3003,
+        "da": 60.98,
+        "f1": 0.9667,
+        "pearson_r": 0.6477,
+        "theils_u": 0.9039,
         "within_2pct": 89.52,
-        "within_5pct": 92.74
+        "within_5pct": 93.55
       },
       "cv": {
-        "mape_mean": 1.345,
-        "mape_std": 0.278,
-        "r2_mean": 0.7892,
-        "r2_std": 0.2358
+        "mape_mean": 1.342,
+        "mape_std": 0.265,
+        "r2_mean": 0.7903,
+        "r2_std": 0.2345
       }
     },
     "diesel": {
       "holdout": {
-        "mae": 3.086,
-        "rmse": 13.783,
-        "mape": 1.33,
-        "r2": 0.6244,
-        "da": 60.16,
+        "mae": 3.075,
+        "rmse": 13.784,
+        "mape": 1.324,
+        "r2": 0.6413,
+        "da": 60.98,
         "f1": 0.9667,
-        "pearson_r": 0.7977,
-        "theils_u": 0.9915,
+        "pearson_r": 0.8074,
+        "theils_u": 0.9917,
         "within_2pct": 90.32,
         "within_5pct": 93.55
       },
       "cv": {
-        "mape_mean": 1.257,
-        "mape_std": 0.391,
-        "r2_mean": 0.8756,
-        "r2_std": 0.1313
+        "mape_mean": 1.277,
+        "mape_std": 0.382,
+        "r2_mean": 0.8811,
+        "r2_std": 0.1212
       }
     }
   }
