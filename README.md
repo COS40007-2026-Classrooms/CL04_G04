@@ -1,34 +1,26 @@
-Group CL04_G04
+VicFuelCast — Suburb-Level Fuel Price Prediction (VIC)
+Group: CL04 — G04
+Members:
 
-Members
+Soad
+Amiru Adhikari — 105522350
+Gia — 105028560
+Gavin Fernando — 104697341
 
-*Soad
 
-Amiru Adhikari - 105522350
+Vision
+The fuel market in Victoria is in an unstable position, placing real financial pressure on families and individuals. To combat this, VicFuelCast provides fuel price predictions at a per-suburb level — giving Victorians the foresight to make smarter refuelling decisions.
 
-*Gia
+Goal
+Build a close-to-accurate fuel price prediction model at a per-suburb level across Victoria.
 
-*Gavin Fernando - 104697341
+Data Sources
+Primary — VIC Servo (Service Victoria)
 
-Group Project
+Daily fuel pricing from all contributing fuel stations across VIC, with a 24-hour delay as designed by VIC Servo
+Live data retrieved via API call using an authorised Service VIC API key
 
-vision
+Secondary — ACCC (Australian Competition and Consumer Commission)
 
-*inspiration
-
-the fuel market is in an unstable postition specially for the families and individuals in VIC, 
-to combat this problem a fuel prediction for each suburb on prices would be helpful
-
-*Goal
-
-A close-to acurate Fuel Prediction Model at a Per Suburb Level 
-
-Data
-
-Primary - Sources from VIC Servo by Service Victoria
-*Daily fuel pricing from all contributing fuel stations across VIC with a 24 hour designed delay by VIC servo
-*API Call for live data via Service VIC authorized Key
-
-Secondry - by the Auatralian Competition and consumer comission
-*A weekly published report containing the fuel history and pricing for the respective previous week
-*An data scrapper triggerd 24 hours after the weekly publication of the fuel report   
+Weekly published reports containing historical fuel pricing for the previous week
+Data collected via a scraper triggered 24 hours after each weekly publication
