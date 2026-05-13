@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIC Fuel Price Forecast</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: var(--color-background-tertiary, #f5f5f3); color: var(--color-text-primary, #1a1a18); min-height: 100vh; }
+  .topbar { background: var(--color-background-primary, #fff); border-bottom: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.12)); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .topbar-title { font-size: 16px; font-weight: 500; }
+  .topbar-meta { font-size: 12px; color: var(--color-text-secondary, #666); }
+  .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-excise { background: #FAEEDA; color: #854F0B; }
+  .badge-live { background: #EAF3DE; color: #3B6D11; }
+  .badge-zone { font-size: 11px; padding: 2px 8px; border-radius: 12px; }
+  .badge-inner { background: #E6F1FB; color: #185FA5; }
+  .badge-middle { background: #EEEDFE; color: #534AB7; }
+  .badge-regional { background: #EAF3DE; color: #3B6D11; }
+  .badge-rural { background: #FAEEDA; color: #854F0B; }
+  .main { padding: 20px 24px; max-width: 1100px; margin: 0 auto; }
+  .section-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-secondary, #888); margin: 24px 0 12px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .metric-card { background: var(--color-background-primary, #fff); border: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.12)); border-radius: 12px; padding: 16px 18px; }
+  .metric-fuel { font-size: 11px; font-weight: 500; color: var(--color-text-secondary, #888); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .fuel-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .metric-current { font-size: 28px; font-weight: 500; line-height: 1.1; }
+  .metric-forecast { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
+  .metric-fc-val { font-size: 16px; font-weight: 500; }
+  .metric-change { font-size: 13px; padding: 2px 7px; border-radius: 8px; font-weight: 500; }
+  .change-up { background: #FCEBEB; color: #A32D2D; }
+  .change-down { background: #EAF3DE; color: #3B6D11; }
+  .change-flat { background: var(--color-background-secondary, #f0f0ee); color: var(--color-text-secondary, #888); }
+  .metric-label { font-size: 11px; color: var(--color-text-secondary, #888); margin-top: 2px; }
+  .chart-card { background: var(--color-background-primary, #fff); border: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.12)); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .chart-title { font-size: 14px; font-weight: 500; }
+  .tab-group { display: flex; gap: 4px; background: var(--color-background-secondary, #f0f0ee); border-radius: 8px; padding: 3px; }
+  .tab { font-size: 12px; padding: 4px 10px; border-radius: 6px; border: none; background: transparent; color: var(--color-text-secondary, #888); cursor: pointer; font-weight: 500; transition: background 0.15s; }
+  .tab.active { background: var(--color-background-primary, #fff); color: var(--color-text-primary, #1a1a18); border: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.12)); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .accuracy-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .acc-card { background: var(--color-background-secondary, #f0f0ee); border-radius: 8px; padding: 12px 14px; }
+  .acc-label { font-size: 11px; color: var(--color-text-secondary, #888); margin-bottom: 4px; }
+  .acc-vals { display: flex; gap: 10px; align-items: baseline; }
+  .acc-fuel { font-size: 13px; font-weight: 500; }
+  .spread-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .spread-table th { font-size: 11px; font-weight: 500; color: var(--color-text-secondary, #888); text-align: left; padding: 6px 8px; border-bottom: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.12)); }
+  .spread-table td { padding: 8px 8px; border-bottom: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.08)); }
+  .spread-table tr:last-child td { border-bottom: none; }
+  .spread-bar { height: 4px; border-radius: 2px; background: #E6F1FB; position: relative; min-width: 40px; width: 100%; }
+  .spread-fill { height: 4px; border-radius: 2px; background: #378ADD; position: absolute; left: 50%; transform: translateX(-50%); }
+  .source-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .src-live { background: #639922; }
+  .src-hist { background: #378ADD; }
+  .src-zone { background: #BA7517; }
+  .pipeline-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary, rgba(0,0,0,0.08)); font-size: 13px; }
+  .pipeline-row:last-child { border-bottom: none; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--color-background-secondary, #f0f0ee); font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-pass { background: #EAF3DE; color: #3B6D11; }
+  .step-warn { background: #FAEEDA; color: #854F0B; }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; font-size: 12px; color: var(--color-text-secondary, #888); }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-box { width: 10px; height: 10px; border-radius: 2px; }
+  select { font-size: 12px; padding: 4px 8px; border-radius: 6px; border: 0.5px solid var(--color-border-secondary, rgba(0,0,0,0.25)); background: var(--color-background-primary, #fff); color: var(--color-text-primary, #1a1a18); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="topbar-title">VIC Fuel Price Forecast &mdash; CL04_G04</div>
+    <div class="topbar-meta">Suburb-level predictions &middot; Ridge Regression + Postcode spread model</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <span class="badge badge-excise">&#9650; Excise cut -32 cpl active to 30 Jun 2026</span>
+    <span class="badge badge-live">&#9679; Live</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="section-label">State-level forecast &mdash; week of <span id="fc-date">12 May 2026</span></div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-fuel"><span class="fuel-dot" style="background:#378ADD"></span>ULP 91 &mdash; Regular Unleaded</div>
+      <div class="metric-current" style="color:#185FA5" id="ulp91-cur">192.4 cpl</div>
+      <div class="metric-forecast">
+        <span class="metric-fc-val" id="ulp91-fc">189.2 cpl</span>
+        <span class="metric-change change-down" id="ulp91-chg">&#9660; -3.2</span>
+      </div>
+      <div class="metric-label">Forecast next week</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-fuel"><span class="fuel-dot" style="background:#639922"></span>ULP 95 &mdash; Premium</div>
+      <div class="metric-current" style="color:#3B6D11" id="ulp95-cur">207.4 cpl</div>
+      <div class="metric-forecast">
+        <span class="metric-fc-val" id="ulp95-fc">204.8 cpl</span>
+        <span class="metric-change change-down" id="ulp95-chg">&#9660; -2.6</span>
+      </div>
+      <div class="metric-label">Forecast next week</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-fuel"><span class="fuel-dot" style="background:#D85A30"></span>Diesel</div>
+      <div class="metric-current" style="color:#993C1D" id="dsl-cur">282.8 cpl</div>
+      <div class="metric-forecast">
+        <span class="metric-fc-val" id="dsl-fc">280.1 cpl</span>
+        <span class="metric-change change-down" id="dsl-chg">&#9660; -2.7</span>
+      </div>
+      <div class="metric-label">Forecast next week</div>
+    </div>
+  </div>
+
+  <div class="section-label">Price trend — last 12 weeks + forecast</div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Melbourne retail pump price (cpl)</span>
+      <div class="tab-group">
+        <button class="tab active" onclick="switchFuel('ulp91',this)">ULP 91</button>
+        <button class="tab" onclick="switchFuel('ulp95',this)">ULP 95</button>
+        <button class="tab" onclick="switchFuel('diesel',this)">Diesel</button>
+      </div>
+    </div>
+    <div class="legend-row">
+      <span class="legend-item"><span class="legend-box" style="background:#378ADD"></span>Actual</span>
+      <span class="legend-item"><span class="legend-box" style="background:#7F77DD;opacity:0.7"></span>Forecast</span>
+      <span class="legend-item"><span class="legend-box" style="background:#FAEEDA;border:0.5px solid #EF9F27"></span>Excise cut period</span>
+    </div>
+    <div style="position:relative;height:240px;">
+      <canvas id="trendChart" role="img" aria-label="Fuel price trend over 12 weeks with forecast for next week.">Fuel price trend chart.</canvas>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-label">Suburb spread model</div>
+      <div class="chart-card" style="margin-bottom:0">
+        <div class="chart-header" style="margin-bottom:12px;">
+          <span class="chart-title">Zone-level ULP 91 forecast (cpl)</span>
+        </div>
+        <table class="spread-table">
+          <thead><tr>
+            <th>Zone</th>
+            <th>Spread</th>
+            <th>Forecast</th>
+            <th>Postcodes</th>
+          </tr></thead>
+          <tbody id="zone-table"></tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Top suburbs by petrol demand</div>
+      <div class="chart-card" style="margin-bottom:0;">
+        <div class="chart-header" style="margin-bottom:12px;">
+          <span class="chart-title">ULP 91 forecast by suburb (cpl)</span>
+          <select id="suburb-fuel" onchange="renderSuburbChart()">
+            <option value="ulp91">ULP 91</option>
+            <option value="ulp95">ULP 95</option>
+            <option value="diesel">Diesel</option>
+          </select>
+        </div>
+        <div style="position:relative;" id="suburb-chart-wrap">
+          <canvas id="suburbChart" role="img" aria-label="Bar chart of forecast fuel price by top Melbourne suburb.">Suburb forecast chart.</canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Model accuracy metrics</div>
+  <div class="accuracy-grid">
+    <div class="acc-card">
+      <div class="acc-label">MAPE (lower = better)</div>
+      <div class="acc-vals">
+        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-mape-91">—</strong>%</span>
+        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-mape-95">—</strong>%</span>
+        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-mape-dsl">—</strong>%</span>
+      </div>
+    </div>
+    <div class="acc-card">
+      <div class="acc-label">R² (higher = better)</div>
+      <div class="acc-vals">
+        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-r2-91">—</strong></span>
+        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-r2-95">—</strong></span>
+        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-r2-dsl">—</strong></span>
+      </div>
+    </div>
+    <div class="acc-card">
+      <div class="acc-label">MAE cpl (lower = better)</div>
+      <div class="acc-vals">
+        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-mae-91">—</strong></span>
+        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-mae-95">—</strong></span>
+        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-mae-dsl">—</strong></span>
+      </div>
+    </div>
+    <div class="acc-card">
+      <div class="acc-label">DA % (higher = better)</div>
+      <div class="acc-vals">
+        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-da-91">—</strong>%</span>
+        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-da-95">—</strong>%</span>
+        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-da-dsl">—</strong>%</span>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:11px;color:var(--color-text-secondary,#888);margin-top:8px;">
+    Thresholds: MAPE &le;3.0% &middot; DA &ge;55% &middot; MAE &le;6.0 cpl &mdash; Paste your <code>price_training_metrics.csv</code> values above to update.
+  </div>
+
+  <div class="section-label">Retraining pipeline</div>
+  <div class="chart-card" style="margin-bottom:0;">
+    <div id="pipeline-steps"></div>
+  </div>
+
+  <div style="height:32px;"></div>
+</div>
+
+<script>
+const STATE = {
+  forecasts: {
+    ulp91:  { cur: 192.4, fc: 189.2, chg: -3.2 },
+    ulp95:  { cur: 207.4, fc: 204.8, chg: -2.6 },
+    diesel: { cur: 282.8, fc: 280.1, chg: -2.7 },
+  },
+  metrics: {
+    ulp91:  { mape: 2.41, r2: 0.9312, mae: 4.2, da: 72.3 },
+    ulp95:  { mape: 2.18, r2: 0.9445, mae: 3.9, da: 74.1 },
+    diesel: { mape: 1.87, r2: 0.9601, mae: 5.1, da: 68.7 },
+  },
+  zones: [
+    { name: 'inner_metro',  spread: +2.0, base: 192.4, n: 87  },
+    { name: 'middle_metro', spread: +4.0, base: 192.4, n: 142 },
+    { name: 'regional_vic', spread: +10.0,base: 192.4, n: 193 },
+    { name: 'rural_remote', spread: +20.0,base: 192.4, n: 74  },
+  ],
+  suburbs: [
+    { name: 'Werribee South',  pc: '3024', petrol: 18420, ulp91: 191.2, ulp95: 206.2, diesel: 279.5, zone:'middle_metro', src:'live' },
+    { name: 'Craigieburn',     pc: '3064', petrol: 17890, ulp91: 196.4, ulp95: 211.4, diesel: 284.1, zone:'middle_metro', src:'live' },
+    { name: 'Dandenong',       pc: '3175', petrol: 16770, ulp91: 195.8, ulp95: 210.8, diesel: 283.3, zone:'middle_metro', src:'hist' },
+    { name: 'Point Cook',      pc: '3030', petrol: 15640, ulp91: 193.6, ulp95: 208.6, diesel: 281.5, zone:'inner_metro',  src:'live' },
+    { name: 'Sunbury',         pc: '3429', petrol: 14210, ulp91: 194.2, ulp95: 209.2, diesel: 282.7, zone:'middle_metro', src:'zone' },
+    { name: 'Narre Warren',    pc: '3804', petrol: 13890, ulp91: 196.1, ulp95: 211.1, diesel: 284.0, zone:'middle_metro', src:'hist' },
+    { name: 'Ballarat',        pc: '3350', petrol: 12340, ulp91: 202.4, ulp95: 217.4, diesel: 291.8, zone:'regional_vic', src:'live' },
+    { name: 'Bendigo',         pc: '3550', petrol: 11980, ulp91: 201.9, ulp95: 216.9, diesel: 290.7, zone:'regional_vic', src:'hist' },
+  ],
+  activeFuel: 'ulp91',
+};
+
+const WEEKS = ['27 Feb','6 Mar','13 Mar','20 Mar','27 Mar','3 Apr','10 Apr','17 Apr','24 Apr','1 May','8 May','15 May'];
+const HISTORY = {
+  ulp91:  [178.2,181.4,183.0,185.6,262.1,218.4,204.1,197.8,194.2,193.1,192.4,null],
+  ulp95:  [193.2,196.4,198.0,200.6,277.1,233.4,219.1,212.8,209.2,208.1,207.4,null],
+  diesel: [282.4,285.8,286.0,287.6,328.4,315.2,306.1,298.7,291.8,286.4,282.8,null],
+};
+const FORECAST_IDX = 11;
+
+function zoneLabel(z) {
+  const map = { inner_metro:'inner_metro', middle_metro:'middle_metro', regional_vic:'regional_vic', rural_remote:'rural_remote' };
+  return map[z] || z;
+}
+function zoneBadgeClass(z) {
+  if (z==='inner_metro') return 'badge-inner';
+  if (z==='middle_metro') return 'badge-middle';
+  if (z==='regional_vic') return 'badge-regional';
+  return 'badge-zone badge-rural';
+}
+function srcDot(s) {
+  if (s==='live') return '<span class="source-dot src-live"></span>live';
+  if (s==='hist') return '<span class="source-dot src-hist"></span>hist';
+  return '<span class="source-dot src-zone"></span>zone';
+}
+
+let trendChart, suburbChart;
+
+function buildTrendData(fuel) {
+  const hist = [...HISTORY[fuel]];
+  const fc = STATE.forecasts[fuel];
+  hist[FORECAST_IDX] = fc.fc;
+  const colors = { ulp91:'#378ADD', ulp95:'#639922', diesel:'#D85A30' };
+  const c = colors[fuel];
+  const bgColors = WEEKS.map((_,i) => i === FORECAST_IDX ? 'rgba(127,119,221,0.18)' : 'rgba(0,0,0,0)');
+  return {
+    labels: WEEKS,
+    datasets: [
+      {
+        label: 'Actual',
+        data: hist.map((v,i) => i < FORECAST_IDX ? v : null),
+        borderColor: c,
+        backgroundColor: c + '18',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.35,
+        pointRadius: hist.map((v,i) => i === FORECAST_IDX-1 ? 5 : 2),
+        pointBackgroundColor: c,
+      },
+      {
+        label: 'Forecast',
+        data: hist.map((v,i) => i >= FORECAST_IDX-1 ? (i===FORECAST_IDX-1 ? HISTORY[fuel][FORECAST_IDX-1] : v) : null),
+        borderColor: '#7F77DD',
+        backgroundColor: 'rgba(127,119,221,0.12)',
+        borderWidth: 2,
+        borderDash: [5,4],
+        fill: false,
+        tension: 0.2,
+        pointRadius: [0,0,0,0,0,0,0,0,0,0,4,6],
+        pointBackgroundColor: '#7F77DD',
+        pointStyle: ['circle','circle','circle','circle','circle','circle','circle','circle','circle','circle','circle','star'],
+      }
+    ]
+  };
+}
+
+function switchFuel(fuel, btn) {
+  STATE.activeFuel = fuel;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  trendChart.data = buildTrendData(fuel);
+  trendChart.update();
+}
+
+function initTrendChart() {
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: buildTrendData('ulp91'),
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+      scales: {
+        x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 11 }, color: '#888', maxRotation: 30 } },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { font: { size: 11 }, color: '#888', callback: v => v + ' c' },
+          min: 160, max: 330
+        }
+      },
+      animation: { duration: 300 }
+    }
+  });
+}
+
+function renderZoneTable() {
+  const tb = document.getElementById('zone-table');
+  tb.innerHTML = STATE.zones.map(z => {
+    const fc = (z.base + z.spread).toFixed(1);
+    const barW = Math.min(80, Math.abs(z.spread) * 2.5);
+    return `<tr>
+      <td><span class="badge zone-badge badge-zone ${zoneBadgeClass(z.name)}">${z.name.replace('_',' ')}</span></td>
+      <td style="width:80px">
+        <div class="spread-bar"><div class="spread-fill" style="width:${barW}px;background:${z.spread>8?'#D85A30':'#378ADD'}"></div></div>
+        <span style="font-size:11px;color:${z.spread>0?'#993C1D':'#3B6D11'}">${z.spread>0?'+':''}${z.spread} cpl</span>
+      </td>
+      <td style="font-weight:500">${fc} cpl</td>
+      <td style="color:#888;font-size:12px">${z.n}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderSuburbChart() {
+  const fuel = document.getElementById('suburb-fuel').value;
+  const labels = STATE.suburbs.map(s => s.name);
+  const vals   = STATE.suburbs.map(s => s[fuel]);
+  const colors = { ulp91:'#378ADD', ulp95:'#639922', diesel:'#D85A30' };
+  const h = STATE.suburbs.length * 36 + 60;
+  document.getElementById('suburb-chart-wrap').style.height = h + 'px';
+  if (suburbChart) { suburbChart.destroy(); }
+  const ctx = document.getElementById('suburbChart').getContext('2d');
+  suburbChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: fuel.toUpperCase(),
+        data: vals,
+        backgroundColor: colors[fuel] + 'cc',
+        borderColor: colors[fuel],
+        borderWidth: 0.5,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + ' cpl' } } },
+      scales: {
+        x: { min: 180, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font:{size:11}, color:'#888', callback: v => v+'c' } },
+        y: { grid: { display: false }, ticks: { font:{size:11}, color:'#555' } }
+      }
+    }
+  });
+}
+
+function renderMetrics() {
+  const m = STATE.metrics;
+  document.getElementById('m-mape-91').textContent  = m.ulp91.mape;
+  document.getElementById('m-mape-95').textContent  = m.ulp95.mape;
+  document.getElementById('m-mape-dsl').textContent = m.diesel.mape;
+  document.getElementById('m-r2-91').textContent    = m.ulp91.r2;
+  document.getElementById('m-r2-95').textContent    = m.ulp95.r2;
+  document.getElementById('m-r2-dsl').textContent   = m.diesel.r2;
+  document.getElementById('m-mae-91').textContent   = m.ulp91.mae;
+  document.getElementById('m-mae-95').textContent   = m.ulp95.mae;
+  document.getElementById('m-mae-dsl').textContent  = m.diesel.mae;
+  document.getElementById('m-da-91').textContent    = m.ulp91.da;
+  document.getElementById('m-da-95').textContent    = m.ulp95.da;
+  document.getElementById('m-da-dsl').textContent   = m.diesel.da;
+}
+
+function renderPipeline() {
+  const steps = [
+    { n:1, label:'Fetch live prices', detail:'Service Victoria Fair Fuel API &middot; 24hr delay', status:'pass' },
+    { n:2, label:'Accuracy check',    detail:'MAPE &le;3% &middot; DA &ge;55% &middot; MAE &le;6 cpl vs last week\'s forecast', status:'pass' },
+    { n:3, label:'Retrain models',    detail:'Ridge regression on ULP91 / ULP95 / Diesel &middot; saves .h5 + scalers', status:'pass' },
+    { n:4, label:'Suburb forecast',   detail:'State forecast + postcode spread (live > historical > zone model)', status:'pass' },
+    { n:5, label:'Write reports',     detail:'suburb_price_forecast.csv &middot; .json &middot; .txt + chart PNG', status:'pass' },
+  ];
+  document.getElementById('pipeline-steps').innerHTML = steps.map(s => `
+    <div class="pipeline-row">
+      <div class="step-num ${s.status==='pass'?'step-pass':'step-warn'}">${s.n}</div>
+      <div style="flex:1">
+        <div style="font-weight:500;font-size:13px">${s.label}</div>
+        <div style="font-size:11px;color:var(--color-text-secondary,#888);margin-top:2px">${s.detail}</div>
+      </div>
+      <div style="font-size:11px;color:${s.status==='pass'?'#3B6D11':'#854F0B'};font-weight:500">${s.status==='pass'?'&#10003; pass':'&#9888; warn'}</div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initTrendChart();
+  renderZoneTable();
+  renderSuburbChart();
+  renderMetrics();
+  renderPipeline();
+});
+</script>
+</body>
+</html>
