@@ -1,5 +1,5 @@
 {
-  "run_timestamp": "2026-05-06T13:10:11.552978",
+  "run_timestamp": "2026-05-13T13:35:39.546958",
   "threshold_passed": true,
   "retrain_attempted": true,
   "retrain_success": true,
@@ -9,5 +9,41 @@
     "da_min": 55.0,
     "mae_max_cpl": 6.0
   },
-  "accuracy": {}
+  "accuracy": {
+    "forecast_date": "2026-05-06",
+    "fuels": {
+      "ulp91": {
+        "forecast_cpl": 181.4,
+        "actual_cpl": 179.9,
+        "error_cpl": -1.5,
+        "ape_pct": 0.834,
+        "da_correct": true
+      },
+      "ulp95": {
+        "forecast_cpl": 194.9,
+        "actual_cpl": 194.9,
+        "error_cpl": 0.0,
+        "ape_pct": 0.0,
+        "da_correct": true
+      },
+      "diesel": {
+        "forecast_cpl": 254.8,
+        "actual_cpl": 239.9,
+        "error_cpl": -14.9,
+        "ape_pct": 6.211,
+        "da_correct": false
+      }
+    },
+    "aggregate": {
+      "mape_pct": 2.348,
+      "da_pct": 66.7,
+      "mae_cpl": 5.47
+    },
+    "threshold_checks": {
+      "mape": true,
+      "da": true,
+      "mae": true
+    },
+    "all_passed": true
+  }
 }
