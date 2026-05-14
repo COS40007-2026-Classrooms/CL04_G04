@@ -70,7 +70,7 @@
 
 <div class="topbar">
   <div>
-    <div class="topbar-title">VIC Fuel Price Forecast &mdash; CL04_G04</div>
+    <div class="topbar-title">VIC Fuel Price Forecast (CL04_G04)</div>
     <div class="topbar-meta">Suburb-level predictions &middot; Ridge Regression + Postcode spread model</div>
   </div>
   <div style="display:flex;gap:8px;align-items:center;">
@@ -80,11 +80,11 @@
 </div>
 
 <div class="main">
-  <div class="section-label">State-level forecast &mdash; week of <span id="fc-date">12 May 2026</span></div>
+  <div class="section-label">State-level forecast for week of <span id="fc-date">12 May 2026</span></div>
 
   <div class="metric-grid">
     <div class="metric-card">
-      <div class="metric-fuel"><span class="fuel-dot" style="background:#378ADD"></span>ULP 91 &mdash; Regular Unleaded</div>
+      <div class="metric-fuel"><span class="fuel-dot" style="background:#378ADD"></span>ULP 91 (Regular Unleaded)</div>
       <div class="metric-current" style="color:#185FA5" id="ulp91-cur">192.4 cpl</div>
       <div class="metric-forecast">
         <span class="metric-fc-val" id="ulp91-fc">189.2 cpl</span>
@@ -93,7 +93,7 @@
       <div class="metric-label">Forecast next week</div>
     </div>
     <div class="metric-card">
-      <div class="metric-fuel"><span class="fuel-dot" style="background:#639922"></span>ULP 95 &mdash; Premium</div>
+      <div class="metric-fuel"><span class="fuel-dot" style="background:#639922"></span>ULP 95 (Premium)</div>
       <div class="metric-current" style="color:#3B6D11" id="ulp95-cur">207.4 cpl</div>
       <div class="metric-forecast">
         <span class="metric-fc-val" id="ulp95-fc">204.8 cpl</span>
@@ -112,7 +112,7 @@
     </div>
   </div>
 
-  <div class="section-label">Price trend — last 12 weeks + forecast</div>
+  <div class="section-label">Price trend: last 12 weeks + forecast</div>
   <div class="chart-card">
     <div class="chart-header">
       <span class="chart-title">Melbourne retail pump price (cpl)</span>
@@ -173,38 +173,38 @@
     <div class="acc-card">
       <div class="acc-label">MAPE (lower = better)</div>
       <div class="acc-vals">
-        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-mape-91">—</strong>%</span>
-        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-mape-95">—</strong>%</span>
-        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-mape-dsl">—</strong>%</span>
+        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-mape-91">-</strong>%</span>
+        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-mape-95">-</strong>%</span>
+        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-mape-dsl">-</strong>%</span>
       </div>
     </div>
     <div class="acc-card">
       <div class="acc-label">R² (higher = better)</div>
       <div class="acc-vals">
-        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-r2-91">—</strong></span>
-        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-r2-95">—</strong></span>
-        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-r2-dsl">—</strong></span>
+        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-r2-91">-</strong></span>
+        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-r2-95">-</strong></span>
+        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-r2-dsl">-</strong></span>
       </div>
     </div>
     <div class="acc-card">
       <div class="acc-label">MAE cpl (lower = better)</div>
       <div class="acc-vals">
-        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-mae-91">—</strong></span>
-        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-mae-95">—</strong></span>
-        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-mae-dsl">—</strong></span>
+        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-mae-91">-</strong></span>
+        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-mae-95">-</strong></span>
+        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-mae-dsl">-</strong></span>
       </div>
     </div>
     <div class="acc-card">
       <div class="acc-label">DA % (higher = better)</div>
       <div class="acc-vals">
-        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-da-91">—</strong>%</span>
-        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-da-95">—</strong>%</span>
-        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-da-dsl">—</strong>%</span>
+        <span class="acc-fuel" style="color:#185FA5">91: <strong id="m-da-91">-</strong>%</span>
+        <span class="acc-fuel" style="color:#3B6D11">95: <strong id="m-da-95">-</strong>%</span>
+        <span class="acc-fuel" style="color:#993C1D">DSL: <strong id="m-da-dsl">-</strong>%</span>
       </div>
     </div>
   </div>
   <div style="font-size:11px;color:var(--color-text-secondary,#888);margin-top:8px;">
-    Thresholds: MAPE &le;3.0% &middot; DA &ge;55% &middot; MAE &le;6.0 cpl &mdash; Paste your <code>price_training_metrics.csv</code> values above to update.
+    Thresholds: MAPE &le;3.0% &middot; DA &ge;55% &middot; MAE &le;6.0 cpl. Paste your <code>price_training_metrics.csv</code> values above to update.
   </div>
 
   <div class="section-label">Retraining pipeline</div>
@@ -245,6 +245,21 @@ const STATE = {
   ],
   activeFuel: 'ulp91',
 };
+
+async function loadForecastData() {
+  const response = await fetch('../reports/price_forecast.json');
+  const data = await response.json();
+
+  // Map JSON → STATE.forecasts
+  STATE.forecasts.ulp91  = { cur: data.forecasts.ulp91.last_actual_cpl,  fc: data.forecasts.ulp91.pred_price_cpl,  chg: data.forecasts.ulp91.change_cpl };
+  STATE.forecasts.ulp95  = { cur: data.forecasts.ulp95.last_actual_cpl,  fc: data.forecasts.ulp95.pred_price_cpl,  chg: data.forecasts.ulp95.change_cpl };
+  STATE.forecasts.diesel = { cur: data.forecasts.diesel.last_actual_cpl, fc: data.forecasts.diesel.pred_price_cpl, chg: data.forecasts.diesel.change_cpl };
+
+  // Map JSON → STATE.metrics (we use the `holdout` block)
+  STATE.metrics.ulp91  = { mape: data.metrics.ulp91.holdout.mape,  r2: data.metrics.ulp91.holdout.r2,  mae: data.metrics.ulp91.holdout.mae,  da: data.metrics.ulp91.holdout.da };
+  STATE.metrics.ulp95  = { mape: data.metrics.ulp95.holdout.mape,  r2: data.metrics.ulp95.holdout.r2,  mae: data.metrics.ulp95.holdout.mae,  da: data.metrics.ulp95.holdout.da };
+  STATE.metrics.diesel = { mape: data.metrics.diesel.holdout.mape, r2: data.metrics.diesel.holdout.r2, mae: data.metrics.diesel.holdout.mae, da: data.metrics.diesel.holdout.da };
+}
 
 const WEEKS = ['27 Feb','6 Mar','13 Mar','20 Mar','27 Mar','3 Apr','10 Apr','17 Apr','24 Apr','1 May','8 May','15 May'];
 const HISTORY = {
@@ -428,13 +443,34 @@ function renderPipeline() {
   `).join('');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function renderForecastCards() {
+  const fmt = (v) => v.toFixed(1) + ' cpl';
+  const chgHtml = (chg) => {
+    const arrow = chg < 0 ? '▼' : chg > 0 ? '▲' : '●';
+    const cls   = chg < 0 ? 'change-down' : chg > 0 ? 'change-up' : 'change-flat';
+    const sign  = chg > 0 ? '+' : '';
+    return `<span class="metric-change ${cls}">${arrow} ${sign}${chg.toFixed(1)}</span>`;
+  };
+
+  for (const fuel of ['ulp91','ulp95','dsl']) {
+    const key = fuel === 'dsl' ? 'diesel' : fuel;
+    const f = STATE.forecasts[key];
+    document.getElementById(`${fuel}-cur`).textContent = fmt(f.cur);
+    document.getElementById(`${fuel}-fc`).textContent  = fmt(f.fc);
+    document.getElementById(`${fuel}-chg`).outerHTML   = chgHtml(f.chg).replace('<span', `<span id="${fuel}-chg"`);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadForecastData();      // fetch JSON first
+  renderForecastCards();          // update top 3 cards
   initTrendChart();
   renderZoneTable();
   renderSuburbChart();
   renderMetrics();
   renderPipeline();
 });
+
 </script>
 </body>
 </html>
