@@ -9,9 +9,9 @@ on:
   # Also trigger on any push that touches the dashboard files
   push:
     branches: [main]
-    paths:
-      - 'dashboard/**'
-      - 'reports/**'
+   # paths:
+      #- 'dashboard/**'
+      #- 'reports/**'
 
   # Manual trigger from Actions UI
   workflow_dispatch:
