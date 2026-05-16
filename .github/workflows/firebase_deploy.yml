@@ -33,9 +33,14 @@ jobs:
         env:
           MAP_API: ${{ secrets.MAP_API }}
         run: |
-          sed -i "s|__MAP_API__|${MAP_API}|g" dashboard/index.html
-          echo "Injection check:"
-          grep -o "MAP_API\|pk\." dashboard/index.html || echo "WARNING: token not found in file"
+          node -e "
+          const fs = require('fs');
+          const file = 'dashboard/index.html';
+          let content = fs.readFileSync(file, 'utf8');
+          if (!process.env.MAP_API) { console.error('MAP_API secret is empty'); process.exit(1); }
+          content = content.replace(/__MAP_API__/g, process.env.MAP_API);
+          fs.writeFileSync(file, content);
+          console.log('Injected token starting with:', process.env.MAP_API.substring(0,8));"
 
       - name: Deploy to Firebase Hosting
         env:
