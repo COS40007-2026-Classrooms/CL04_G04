@@ -6,7 +6,7 @@ const GITHUB_ORG    = 'COS40007-2026-Classrooms';
 const GITHUB_REPO   = 'CL04_G04';
 const GITHUB_BRANCH = 'main';
 const RAW = `https://raw.githubusercontent.com/${GITHUB_ORG}/${GITHUB_REPO}/${GITHUB_BRANCH}`;
-const MAPBOX_TOKEN  = window.MAP_API || '__MAP_API__';
+const MAPBOX_TOKEN  ='pk.eyJ1IjoiZ2F2LXRlc3QtYXJjIiwiYSI6ImNtb3JkMG10dzAyMDUycW9wa2h0bzlnbGcifQ.VsQylzIqJDNoSX6DbGAxOg';
 
 const C = {
   c1:'#0B7F8C', c2:'#2CBFBF', c3:'#F2A413', c4:'#D96704', c5:'#BF3604',
