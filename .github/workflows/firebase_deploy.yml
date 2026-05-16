@@ -32,7 +32,9 @@ jobs:
         env:
           MAP_API: ${{ secrets.MAP_API }}
         run: |
-          sed -i "s|__MAP_API__|${MAP_API}|g" dashboard/code/index.html
+          sed -i "s|__MAP_API__|${MAP_API}|g" dashboard/index.html
+          echo "Injection check:"
+          grep -o "MAP_API\|pk\." dashboard/index.html || echo "WARNING: token not found in file"
 
       - name: Deploy to Firebase Hosting
         env:
