@@ -1,0 +1,46 @@
+name: Deploy Dashboard to Firebase
+
+on:
+  # Trigger when weekly forecast pushes new data
+  workflow_run:
+    workflows: ["Weekly Fuel Forecast & Retrain"]
+    types: [completed]
+
+  # Also trigger on any push that touches the dashboard files
+  push:
+    branches: [main]
+    paths:
+      - 'dashboard/**'
+      - 'reports/**'
+
+  # Manual trigger from Actions UI
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Only deploy if the triggering workflow succeeded (skip if retrain failed)
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GAVS_TOKEN }}
+
+      - name: Inject Mapbox API key into HTML
+        env:
+          MAP_API: ${{ secrets.MAP_API }}
+        run: |
+          sed -i "s|__MAP_API__|${MAP_API}|g" dashboard/code/index.html
+
+      - name: Deploy to Firebase Hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          npm install -g firebase-tools
+          firebase deploy --only hosting --token "$FIREBASE_TOKEN" --non-interactive
+
+      - name: Print live URL
+        run: |
+          echo "Dashboard live at: https://$(cat .firebaserc | python3 -c "import json,sys; print(json.load(sys.stdin)['projects']['default'])").web.app"
