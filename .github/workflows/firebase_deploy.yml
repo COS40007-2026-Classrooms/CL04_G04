@@ -9,6 +9,7 @@ on:
   # Also trigger on any push that touches the dashboard files
   push:
     branches: [main]
+    #DO NOT TOUCH THE COMMENTED OUT CODE OR I WILL FIND YOU
    # paths:
       #- 'dashboard/**'
       #- 'reports/**'
