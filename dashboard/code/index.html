@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>VIC Fuel Forecast — CL04_G04</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Mapbox -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
+<!-- D3 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+
+<!-- Dashboard styles -->
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<!-- Shared tooltip -->
+<div class="d3-tooltip" id="tip"></div>
+
+<header>
+  <div class="logo">
+    <div class="lm">VF</div>
+    <div>
+      <div class="lt">VIC Fuel Forecast</div>
+      <div class="ls">CL04_G04 - Swinburne COS40007</div>
+    </div>
+  </div>
+  <nav>
+    <a onclick="gs('sum')">Summary</a>
+    <a onclick="gs('map')">Map</a>
+    <a onclick="gs('charts')">Charts</a>
+    <a onclick="gs('top3')">Top Suburbs</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="xbadge">Excise cut -32cpl</span>
+    <span id="lup">Loading...</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- SUMMARY -->
+  <section id="sum">
+    <div class="st">This week's forecast</div>
+    <div class="sg" id="sg"></div>
+  </section>
+
+  <!-- SEARCH -->
+  <section id="ss">
+    <div class="st">Search suburb</div>
+    <div style="position:relative">
+      <div class="sb">
+        <span style="color:var(--txt3);font-size:16px">⌕</span>
+        <input id="si" type="text" placeholder="Suburb name or postcode..." autocomplete="off">
+      </div>
+      <div id="sr"></div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section id="map">
+    <div class="st">Victoria fuel price map</div>
+    <div class="ftog">
+      <button class="active" onclick="setFB(this,'ulp91')">ULP91</button>
+      <button onclick="setFB(this,'ulp95')">ULP95</button>
+      <button onclick="setFB(this,'diesel')">Diesel</button>
+    </div>
+    <div class="mw">
+      <div id="map"></div>
+      <div class="mleg">
+        <div class="mlt">Forecast price (cpl)</div>
+        <div class="mlg"></div>
+        <div class="mlk"><span id="mln">Low</span><span id="mlx">High</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARTS -->
+  <section id="charts">
+    <div class="st">Price analytics</div>
+    <div class="chart-grid">
+
+      <!-- 1. Grouped Bar: Current vs Forecast -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Current vs Forecast</div>
+            <div class="card-sub">State-wide median price (cpl)</div>
+          </div>
+          <div class="cleg">
+            <div class="cli"><div class="cld" style="background:var(--c2);opacity:.5"></div>Current</div>
+            <div class="cli"><div class="cld" style="background:var(--c2)"></div>Forecast</div>
+          </div>
+        </div>
+        <div id="chart-grouped" style="position:relative"></div>
+      </div>
+
+      <!-- 2. Bollinger Bands: Price distribution across suburbs -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Suburb Price Distribution</div>
+            <div class="card-sub">Min / median / max across all postcodes</div>
+          </div>
+          <div class="cleg" id="bb-legend"></div>
+        </div>
+        <div id="chart-bollinger" style="position:relative"></div>
+      </div>
+
+      <!-- 3. Scatter: Price vs Fleet size -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Price vs Fleet Size</div>
+            <div class="card-sub">ULP91 forecast — suburb vehicle count</div>
+          </div>
+          <div class="cleg">
+            <div class="cli"><div class="cld" style="background:var(--c1);border-radius:50%"></div>Inner metro</div>
+            <div class="cli"><div class="cld" style="background:var(--c3);border-radius:50%"></div>Middle metro</div>
+            <div class="cli"><div class="cld" style="background:var(--c5);border-radius:50%"></div>Regional</div>
+          </div>
+        </div>
+        <div id="chart-scatter" style="position:relative"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TOP 3 -->
+  <section id="top3">
+    <div class="st">Top 3 cheapest suburbs per fuel</div>
+    <div class="t3g" id="t3g"></div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>VIC Fuel Forecast</strong> · CL04_G04 · Swinburne COS40007 AI Engineering 2026
+  · Data: <strong>Service Victoria Fair Fuel Open Data API</strong>
+</footer>
+
+<!-- Dashboard logic -->
+<script src="../java/main.js"></script>
+
+</body>
+</html>
