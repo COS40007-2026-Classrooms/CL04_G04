@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GAVS_TOKEN }}
 
       #  Python setup 
       - name: Set up Python ${{ env.PYTHON_VERSION }}
@@ -112,6 +112,8 @@ jobs:
 
       #  Commit updated outputs 
       - name: Commit forecast outputs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GAVS_TOKEN }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -145,7 +147,7 @@ jobs:
           git diff --cached --quiet || \
             git commit -m "chore: weekly forecast $(date +'%Y-%m-%d') [MAPE=${{ steps.metrics.outputs.mape }}] [status=${{ steps.metrics.outputs.status }}]"
 
-          git push
+          git push origin HEAD:${{ github.ref_name }}
 
       #  Job summary 
       - name: Write job summary
@@ -173,9 +175,9 @@ jobs:
           thresh = d.get('thresholds', {})
           checks = d.get('accuracy',{}).get('threshold_checks',{})
           if agg:
-              lines.append(f"| MAPE | {agg.get('mape_pct','N/A')}% | <={thresh.get('mape_max','?')}% | {'✅' if checks.get('mape') else '❌'} |")
-              lines.append(f"| DA   | {agg.get('da_pct','N/A')}% | >={thresh.get('da_min','?')}% | {'✅' if checks.get('da') else '❌'} |")
-              lines.append(f"| MAE  | {agg.get('mae_cpl','N/A')} cpl | <={thresh.get('mae_max_cpl','?')} cpl | {'✅' if checks.get('mae') else '❌'} |")
+              lines.append(f"| MAPE | {agg.get('mape_pct','N/A')}% | <={thresh.get('mape_max','?')}% | {'YES' if checks.get('mape') else 'NO'} |")
+              lines.append(f"| DA   | {agg.get('da_pct','N/A')}% | >={thresh.get('da_min','?')}% | {'YES' if checks.get('da') else 'NO'} |")
+              lines.append(f"| MAE  | {agg.get('mae_cpl','N/A')} cpl | <={thresh.get('mae_max_cpl','?')} cpl | {'YES' if checks.get('mae') else 'NO'} |")
 
           lines += ["", f"### {retrain_icon} Retrain: {'Models updated' if retrained else 'Models unchanged'}"]
 
