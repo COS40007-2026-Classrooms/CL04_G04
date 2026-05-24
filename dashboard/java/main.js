@@ -1,4 +1,4 @@
-/* VIC Fuel Forecast Dashboard — main.js
+/* VIC Fuel Forecast Dashboard - main.js
    CL04_G04 · Swinburne COS40007 AI Engineering */
 
 /* CONFIG  */
@@ -154,7 +154,7 @@ function initSearch() {
           <div class="srn">${s.suburb_name}</div>
           <div class="srp">${s.postcode} · ${(s.zone || '').replace('_', ' ')}</div>
         </div>
-        <div class="srv">${s.fuels?.ulp91?.forecast_cpl?.toFixed(1) || '—'} cpl</div>
+        <div class="srv">${s.fuels?.ulp91?.forecast_cpl?.toFixed(1) || '-'} cpl</div>
       </div>`).join('');
     res.style.display = 'block';
   });
@@ -182,17 +182,18 @@ function initMap() {
         <div style="font-size:42px;opacity:.25">🗺</div>
         <div style="text-align:center">
           <strong style="color:#0B7F8C;display:block;margin-bottom:6px">Mapbox map</strong>
-          Requires MAP_API — injected at deploy time
+          Requires MAP_API - injected at deploy time
         </div>
       </div>`;
     return;
   }
   mapboxgl.accessToken = MAPBOX_TOKEN;
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   mapInstance = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/light-v11',
-    center: [145.3, -37.1],
-    zoom: 7.2,
+    style: isDark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11',
+    center: [144.9631, -37.8136],
+    zoom: 11,
     maxBounds: [[140, -40], [151, -33.5]]
   });
   mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
@@ -264,9 +265,7 @@ function buildMapLayer(fuel) {
   }
 }
 
-/* =============================================================================
-   D3 CHARTS
-============================================================================= */
+/* D3 CHARTS*/
 
 /*  1. GROUPED BAR: Current vs Forecast  */
 function rGroupedBar() {
@@ -575,5 +574,410 @@ function demoSuburbs() {
   };
 }
 
-/*  BOOT  */
-window.addEventListener('load', loadData);
+/*  BOOT - extended at bottom of file  */
+/* window.addEventListener('load', loadData); */
+
+/* DARK MODE */
+function initDarkMode() {
+  if (localStorage.getItem('darkMode') === 'true')
+    document.documentElement.setAttribute('data-theme', 'dark');
+  updateDarkIcon();
+}
+
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('darkMode', 'false');
+    if (mapInstance) mapInstance.setStyle('mapbox://styles/mapbox/light-v11');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('darkMode', 'true');
+    if (mapInstance) mapInstance.setStyle('mapbox://styles/mapbox/dark-v11');
+  }
+  updateDarkIcon();
+  // Rebuild D3 charts after style transition so CSS vars are re-read
+  setTimeout(() => {
+    ['chart-grouped','chart-bollinger','chart-scatter','chart-history']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
+    rGroupedBar(); rBollinger(); rScatter();
+    if (window._actualsData) rPriceHistory(window._actualsData, window._forecastData);
+  }, 350);
+}
+
+function updateDarkIcon() {
+  const btn = document.getElementById('darkToggle');
+  if (!btn) return;
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  btn.textContent = isDark ? '☀' : '🌙';
+  btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+}
+
+/* PRICE HISTORY LINE CHART */
+async function loadPriceHistory() {
+  let rows = [];
+  try {
+    const res  = await fetch(`${RAW}/data/actuals_history.csv`);
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    const header = lines[0].split(',');
+    rows = lines.slice(1).map(l => {
+      const v = l.split(',');
+      return {
+        date:   new Date(v[0]),
+        ulp91:  parseFloat(v[1]) || null,
+        ulp95:  parseFloat(v[2]) || null,
+        diesel: parseFloat(v[3]) || null,
+      };
+    }).filter(r => r.date && !isNaN(r.date));
+  } catch {
+    rows = demoHistory();
+  }
+
+  // Take last 12 weeks
+  rows = rows.slice(-12);
+
+  // Pull forecast point from forecastData
+  const sf = forecastData?.state_forecasts || {};
+  const lastDate = rows.length ? rows[rows.length - 1].date : new Date();
+  const fcDate   = new Date(lastDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const fcPoint  = {
+    date:   fcDate,
+    ulp91:  sf.ulp91?.forecast_cpl  || null,
+    ulp95:  sf.ulp95?.forecast_cpl  || null,
+    diesel: sf.diesel?.forecast_cpl || null,
+    isForecast: true,
+  };
+
+  // Cache for dark mode rebuild
+  window._actualsData  = rows;
+  window._forecastData = fcPoint;
+
+  rPriceHistory(rows, fcPoint);
+}
+
+function rPriceHistory(rows, fcPoint) {
+  const el = document.getElementById('chart-history');
+  if (!el) return;
+  el.innerHTML = '';
+
+  const allRows  = [...rows, fcPoint].filter(Boolean);
+  const W  = el.offsetWidth || 700;
+  const H  = 280;
+  const mg = { top: 16, right: 28, bottom: 48, left: 54 };
+  const iW = W - mg.left - mg.right;
+  const iH = H - mg.top  - mg.bottom;
+
+  const fuels  = ['ulp91', 'ulp95', 'diesel'];
+  const colors = { ulp91: '#0B7F8C', ulp95: '#F2A413', diesel: '#BF3604' };
+  const labels = { ulp91: 'ULP91', ulp95: 'ULP95', diesel: 'Diesel' };
+
+  const x = d3.scaleTime()
+    .domain(d3.extent(allRows, d => d.date))
+    .range([0, iW]);
+
+  const allVals = allRows.flatMap(r => fuels.map(f => r[f])).filter(v => v && !isNaN(v));
+  const y = d3.scaleLinear()
+    .domain([d3.min(allVals) * .975, d3.max(allVals) * 1.025])
+    .range([iH, 0]);
+
+  const svg = d3.select('#chart-history').append('svg')
+    .attr('width', W).attr('height', H).attr('class', 'd3-chart')
+    .style('overflow', 'visible');
+
+  const g = svg.append('g').attr('transform', `translate(${mg.left},${mg.top})`);
+
+  // Grid lines
+  g.append('g').attr('class', 'd3-grid')
+    .call(d3.axisLeft(y).tickSize(-iW).tickFormat(''))
+    .call(ax => ax.select('.domain').remove());
+
+  // Excise cut shading (Apr 1 – Jun 30 2026)
+  const exciseS = new Date('2026-04-01');
+  const exciseE = new Date('2026-06-30');
+  const xs = Math.max(0, x(exciseS));
+  const xe = Math.min(iW, x(exciseE));
+  if (xe > xs) {
+    g.append('rect')
+      .attr('x', xs).attr('y', 0)
+      .attr('width', xe - xs).attr('height', iH)
+      .attr('fill', '#F2A413').attr('opacity', .07);
+    g.append('text')
+      .attr('x', xs + (xe - xs) / 2).attr('y', iH - 6)
+      .attr('text-anchor', 'middle').attr('font-size', 9)
+      .attr('fill', '#D96704').attr('opacity', .7)
+      .text('Excise cut -32cpl');
+  }
+
+  // Draw lines for each fuel
+  fuels.forEach(fuel => {
+    const actuals  = rows.filter(r => r[fuel] !== null && !isNaN(r[fuel]));
+    const lastActual = actuals[actuals.length - 1];
+
+    // Solid line - actuals only
+    const line = d3.line()
+      .defined(d => d[fuel] !== null && !isNaN(d[fuel]))
+      .x(d => x(d.date))
+      .y(d => y(d[fuel]))
+      .curve(d3.curveMonotoneX);
+
+    g.append('path')
+      .datum(actuals)
+      .attr('fill', 'none')
+      .attr('stroke', colors[fuel])
+      .attr('stroke-width', 2.2)
+      .attr('d', line);
+
+    // Area fill under actuals
+    const area = d3.area()
+      .defined(d => d[fuel] !== null && !isNaN(d[fuel]))
+      .x(d => x(d.date))
+      .y0(iH)
+      .y1(d => y(d[fuel]))
+      .curve(d3.curveMonotoneX);
+
+    g.append('path')
+      .datum(actuals)
+      .attr('fill', colors[fuel])
+      .attr('opacity', .06)
+      .attr('d', area);
+
+    // Dashed line from last actual to forecast point
+    if (lastActual && fcPoint?.[fuel]) {
+      g.append('line')
+        .attr('x1', x(lastActual.date)).attr('y1', y(lastActual[fuel]))
+        .attr('x2', x(fcPoint.date)).attr('y2', y(fcPoint[fuel]))
+        .attr('stroke', colors[fuel])
+        .attr('stroke-width', 1.8)
+        .attr('stroke-dasharray', '5,4')
+        .attr('opacity', .65);
+
+      // Forecast endpoint dot
+      g.append('circle')
+        .attr('cx', x(fcPoint.date)).attr('cy', y(fcPoint[fuel]))
+        .attr('r', 5).attr('fill', colors[fuel]).attr('opacity', .8)
+        .attr('stroke', 'var(--surf)').attr('stroke-width', 1.8);
+    }
+
+    // Data point dots on actuals
+    actuals.forEach(d => {
+      g.append('circle')
+        .attr('cx', x(d.date)).attr('cy', y(d[fuel]))
+        .attr('r', 3.5)
+        .attr('fill', colors[fuel])
+        .attr('stroke', 'var(--surf)')
+        .attr('stroke-width', 1.5)
+        .attr('opacity', .85);
+    });
+  });
+
+  // Axes
+  g.append('g').attr('class', 'd3-axis')
+    .attr('transform', `translate(0,${iH})`)
+    .call(d3.axisBottom(x)
+      .ticks(Math.min(allRows.length, 8))
+      .tickFormat(d3.timeFormat('%-d %b')))
+    .call(ax => ax.select('.domain').remove())
+    .selectAll('text')
+    .attr('transform', 'rotate(-30)')
+    .style('text-anchor', 'end');
+
+  g.append('g').attr('class', 'd3-axis')
+    .call(d3.axisLeft(y).ticks(5).tickFormat(v => v.toFixed(0)));
+
+  g.append('text')
+    .attr('x', -iH / 2).attr('y', -40)
+    .attr('transform', 'rotate(-90)')
+    .attr('text-anchor', 'middle')
+    .attr('font-size', 11).attr('fill', 'var(--txt3)')
+    .text('cents per litre');
+
+  // ── Crosshair + hover tooltip ──
+  const crossV = g.append('line')
+    .attr('class', 'ph-crosshair')
+    .attr('y1', 0).attr('y2', iH)
+    .style('display', 'none');
+
+  const hoverDots = {};
+  fuels.forEach(fuel => {
+    hoverDots[fuel] = g.append('circle')
+      .attr('r', 5).attr('fill', colors[fuel])
+      .attr('stroke', 'var(--surf)').attr('stroke-width', 2)
+      .style('display', 'none').style('pointer-events', 'none');
+  });
+
+  // Invisible overlay for mouse events
+  const bisect = d3.bisector(d => d.date).left;
+
+  g.append('rect')
+    .attr('width', iW).attr('height', iH)
+    .attr('fill', 'transparent')
+    .on('mousemove', function(event) {
+      const [mx] = d3.pointer(event, this);
+      const xDate = x.invert(mx);
+      // Find nearest actual data point
+      const idx = bisect(rows, xDate);
+      const d0  = rows[Math.max(0, idx - 1)];
+      const d1  = rows[Math.min(rows.length - 1, idx)];
+      if (!d0 && !d1) return;
+      const d   = !d1 ? d0 : !d0 ? d1 :
+        (xDate - d0.date > d1.date - xDate ? d1 : d0);
+      if (!d) return;
+
+      const cx = x(d.date);
+      crossV.attr('x1', cx).attr('x2', cx).style('display', null);
+
+      fuels.forEach(fuel => {
+        if (d[fuel]) {
+          hoverDots[fuel]
+            .attr('cx', cx).attr('cy', y(d[fuel]))
+            .style('display', null);
+        }
+      });
+
+      const dateStr = d3.timeFormat('%-d %b %Y')(d.date);
+      showTip(
+        `<strong>${dateStr}</strong>` +
+        fuels.filter(f => d[f]).map(f =>
+          `<span style="color:${colors[f]}">■</span> ${labels[f]}: ${d[f].toFixed(1)} cpl`
+        ).join('<br>'),
+        event
+      );
+    })
+    .on('mouseleave', () => {
+      crossV.style('display', 'none');
+      fuels.forEach(f => hoverDots[f].style('display', 'none'));
+      hideTip();
+    });
+}
+
+function demoHistory() {
+  // Generate 12 weeks of plausible demo data working backwards from known values
+  const base = { ulp91: 180.9, ulp95: 195.9, diesel: 253.5 };
+  const rows = [];
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i * 7);
+    // Add some realistic weekly variation
+    const noise = (Math.sin(i * 1.3) * 8) + (Math.cos(i * 0.7) * 4);
+    rows.push({
+      date:   d,
+      ulp91:  Math.round((base.ulp91  + noise + (i > 6 ? 15 : 0)) * 10) / 10,
+      ulp95:  Math.round((base.ulp95  + noise + (i > 6 ? 15 : 0)) * 10) / 10,
+      diesel: Math.round((base.diesel + noise * 0.4 + (i > 6 ? 8 : 0)) * 10) / 10,
+    });
+  }
+  return rows;
+}
+
+/* MODEL METRICS TABLE */
+async function loadModelMetrics() {
+  let metrics = null, pipeline = null;
+  try {
+    const [mr, pr] = await Promise.all([
+      fetch(`${RAW}/reports/price_forecast.json`),
+      fetch(`${RAW}/data/pipeline_metrics.json`)
+    ]);
+    metrics  = await mr.json();
+    pipeline = await pr.json();
+  } catch {
+    metrics  = demoMetrics();
+    pipeline = demoPipeline();
+  }
+
+  const el = document.getElementById('metrics-table');
+  if (!el) return;
+
+  const fuels      = ['ulp91', 'ulp95', 'diesel'];
+  const fuelLabels = { ulp91: 'ULP91', ulp95: 'ULP95', diesel: 'Diesel' };
+  const mData      = metrics?.metrics || {};
+  const genAt      = metrics?.generated_at ? new Date(metrics.generated_at) : new Date();
+  const retrained  = pipeline?.retrain_success;
+  const threshold  = pipeline?.threshold_passed;
+
+  function confidence(mape) {
+    if (!mape) return { pct: 0, str: '-' };
+    const score = Math.max(0, Math.min(100, 100 - (mape * 10)));
+    return { pct: score, str: score.toFixed(0) + '%' };
+  }
+  function confColor(pct) {
+    return pct > 85 ? '#2CBFBF' : pct > 70 ? '#F2A413' : '#BF3604';
+  }
+  function mapeStyle(mape) {
+    if (!mape) return '';
+    if (mape < 1.5) return 'style="color:#1A7A4A;font-weight:600"';
+    if (mape < 2.5) return 'style="color:#9A6800;font-weight:600"';
+    return 'style="color:#BF3604;font-weight:600"';
+  }
+
+  el.innerHTML = `
+    <div class="mi-header">
+      <div>
+        <div class="mi-title">Model accuracy - Ridge Regression (α=1.0)</div>
+        <div class="mi-sub">Last retrain: ${genAt.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+      <div class="mi-badges">
+        <span class="mi-badge ${threshold ? 'pass' : 'fail'}">${threshold ? '✓ Threshold passed' : '✗ Threshold failed'}</span>
+        <span class="mi-badge ${retrained ? 'pass' : 'neutral'}">${retrained ? '↻ Retrained this run' : '→ Models unchanged'}</span>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="mi-table">
+        <thead>
+          <tr>
+            <th>Fuel</th>
+            <th>MAPE %</th>
+            <th>MAE (cpl)</th>
+            <th>CV R²</th>
+            <th>F1 Score</th>
+            <th>Confidence</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${fuels.map(k => {
+            const h   = mData[k]?.holdout || {};
+            const cv  = mData[k]?.cv      || {};
+            const conf = confidence(h.mape);
+            const statusLabel = !h.mape ? '-' : h.mape < 1.5 ? '✓ Excellent' : h.mape < 2.5 ? '~ Good' : '△ Review';
+            const statusCls   = !h.mape ? '' : h.mape < 1.5 ? 'pass' : h.mape < 2.5 ? 'warn' : 'fail';
+            const fuelCls     = k === 'ulp91' ? 'u91' : k === 'ulp95' ? 'u95' : 'dsl';
+            return `<tr>
+              <td><span class="mi-fuel ${fuelCls}">${fuelLabels[k]}</span></td>
+              <td ${mapeStyle(h.mape)}>${h.mape ? h.mape.toFixed(2) + '%' : '-'}</td>
+              <td>${h.mae    ? h.mae.toFixed(2)    : '-'}</td>
+              <td>${cv.r2_mean ? cv.r2_mean.toFixed(4) : '-'}</td>
+              <td>${h.f1     ? h.f1.toFixed(4)    : '-'}</td>
+              <td>
+                <div class="mi-conf-wrap">
+                  <div class="mi-conf-bar" style="width:${conf.pct}%;background:${confColor(conf.pct)}"></div>
+                  <span>${conf.str}</span>
+                </div>
+              </td>
+              <td><span class="mi-status ${statusCls}">${statusLabel}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function demoMetrics() {
+  return { generated_at: new Date().toISOString(), metrics: {
+    ulp91:  { holdout: { mape: 1.77, mae: 3.5, r2: 0.37, f1: 0.9794 }, cv: { mape_mean: 1.78, r2_mean: 0.8014 } },
+    ulp95:  { holdout: { mape: 1.18, mae: 2.6, r2: 0.32, f1: 0.9667 }, cv: { mape_mean: 1.34, r2_mean: 0.7932 } },
+    diesel: { holdout: { mape: 1.32, mae: 3.1, r2: 0.58, f1: 0.9667 }, cv: { mape_mean: 1.25, r2_mean: 0.8655 } },
+  }};
+}
+function demoPipeline() {
+  return { threshold_passed: true, retrain_success: true, run_timestamp: new Date().toISOString() };
+}
+
+/* BOOT ; replaces the original window load listener */
+window.removeEventListener('load', loadData);
+window.addEventListener('load', async () => {
+  initDarkMode();
+  await loadData(); // loads suburb + forecast data, renders all charts
+  loadPriceHistory(); // async -renders after actuals csv loads
+  loadModelMetrics(); // async - renders after json loads
+});
