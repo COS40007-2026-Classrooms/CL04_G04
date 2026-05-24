@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>VIC Fuel Forecast — CL04_G04</title>
+<title>VIC Fuel Forecast - CL04_G04 :)</title>
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,10 +17,11 @@
 
 <!-- Dashboard styles -->
 <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
 
-<!-- Shared tooltip -->
+<!-- Shared D3 tooltip -->
 <div class="d3-tooltip" id="tip"></div>
 
 <header>
@@ -35,11 +36,14 @@
     <a onclick="gs('sum')">Summary</a>
     <a onclick="gs('map')">Map</a>
     <a onclick="gs('charts')">Charts</a>
+    <a onclick="gs('history')">History</a>
     <a onclick="gs('top3')">Top Suburbs</a>
+    <a onclick="gs('metrics')">Model</a>
   </nav>
-  <div style="display:flex;align-items:center;gap:12px">
+  <div style="display:flex;align-items:center;gap:10px">
     <span class="xbadge">Excise cut -32cpl</span>
     <span id="lup">Loading...</span>
+    <button id="darkToggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
   </div>
 </header>
 
@@ -81,7 +85,7 @@
     </div>
   </section>
 
-  <!-- CHARTS -->
+  <!-- ANALYTICS CHARTS -->
   <section id="charts">
     <div class="st">Price analytics</div>
     <div class="chart-grid">
@@ -101,7 +105,7 @@
         <div id="chart-grouped" style="position:relative"></div>
       </div>
 
-      <!-- 2. Bollinger Bands: Price distribution across suburbs -->
+      <!-- 2. Bollinger Bands -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -118,7 +122,7 @@
         <div class="card-header">
           <div>
             <div class="card-title">Price vs Fleet Size</div>
-            <div class="card-sub">ULP91 forecast — suburb vehicle count</div>
+            <div class="card-sub">ULP91 forecast - suburb vehicle count</div>
           </div>
           <div class="cleg">
             <div class="cli"><div class="cld" style="background:var(--c1);border-radius:50%"></div>Inner metro</div>
@@ -132,10 +136,43 @@
     </div>
   </section>
 
+  <!-- PRICE HISTORY LINE CHART -->
+  <section id="history">
+    <div class="st">Price history</div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Weekly actuals - last 12 weeks</div>
+          <div class="card-sub">VIC median pump price from Fair Fuel API · hover for values</div>
+        </div>
+        <div class="ph-legend">
+          <div class="ph-li"><div class="ph-line" style="background:#0B7F8C"></div>ULP91</div>
+          <div class="ph-li"><div class="ph-line" style="background:#F2A413"></div>ULP95</div>
+          <div class="ph-li"><div class="ph-line" style="background:#BF3604"></div>Diesel</div>
+          <div class="ph-li">
+            <div style="width:22px;height:2.5px;background:#2CBFBF;border-radius:2px;border:1px dashed #2CBFBF;opacity:.7"></div>
+            Forecast
+          </div>
+        </div>
+      </div>
+      <div id="chart-history" style="position:relative"></div>
+    </div>
+  </section>
+
   <!-- TOP 3 -->
   <section id="top3">
     <div class="st">Top 3 cheapest suburbs per fuel</div>
     <div class="t3g" id="t3g"></div>
+  </section>
+
+  <!-- MODEL METRICS -->
+  <section id="metrics">
+    <div class="st">Model performance</div>
+    <div class="mi-card" id="metrics-table">
+      <div style="color:var(--txt3);font-size:13px;padding:20px 0;text-align:center">
+        Loading model metrics...
+      </div>
+    </div>
   </section>
 
 </main>
@@ -145,10 +182,9 @@
   · Data: <strong>Service Victoria Fair Fuel Open Data API</strong>
 </footer>
 
-<!-- Dashboard logic -->
+<!-- MAP_API injected by GitHub Actions CI/CD before deploy -->
 <script>window.MAP_API = '__MAP_API__';</script>
 <script src="java/main.js"></script>
-
 
 </body>
 </html>
