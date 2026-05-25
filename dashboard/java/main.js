@@ -961,7 +961,7 @@ async function loadModelMetrics() {
       </table>
     </div>`;
 }
-
+/* this has been used for extreme measures only as well as was the initial testing for UI we left it intentially for full fall back*/
 function demoMetrics() {
   return { generated_at: new Date().toISOString(), metrics: {
     ulp91:  { holdout: { mape: 1.77, mae: 3.5, r2: 0.37, f1: 0.9794 }, cv: { mape_mean: 1.78, r2_mean: 0.8014 } },
