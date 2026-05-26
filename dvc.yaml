@@ -1,0 +1,9 @@
+stages:
+  train:
+    cmd: python model.py
+    deps:
+      - model.py
+      - data
+    outs:
+      - model_results.png
+      - metrics.txt
