@@ -88,6 +88,13 @@
   <!-- ANALYTICS CHARTS -->
   <section id="charts">
     <div class="st">Price analytics</div>
+    <!-- FIX 4: Fuel filter applies to all 3 charts -->
+    <div class="chart-ftog">
+      <button class="active" onclick="setChartFuel(this,'all')">All fuels</button>
+      <button onclick="setChartFuel(this,'ulp91')">ULP91</button>
+      <button onclick="setChartFuel(this,'ulp95')">ULP95</button>
+      <button onclick="setChartFuel(this,'diesel')">Diesel</button>
+    </div>
     <div class="chart-grid">
 
       <!-- 1. Grouped Bar: Current vs Forecast -->
@@ -179,7 +186,6 @@
 
 <footer>
   <strong>VIC Fuel Forecast</strong> · CL04_G04 · Swinburne COS40007 AI Engineering 2026
-  · Data: <strong>Service Victoria Fair Fuel Open Data API</strong>
 </footer>
 
 <!-- MAP_API injected by GitHub Actions CI/CD before deploy -->
