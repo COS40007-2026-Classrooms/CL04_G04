@@ -6,7 +6,7 @@ const GITHUB_ORG    = 'COS40007-2026-Classrooms';
 const GITHUB_REPO   = 'CL04_G04';
 const GITHUB_BRANCH = 'main';
 const RAW = `https://raw.githubusercontent.com/${GITHUB_ORG}/${GITHUB_REPO}/${GITHUB_BRANCH}`;
-/*const MAPBOX_TOKEN  =''; PLEASE DO NOT TOUCH THIS */
+/*const MAPBOX_TOKEN  =''; PLEASE DO NOT TOUCH THIS OR I WILL FIND YOU*/
 const MAPBOX_TOKEN = window.MAP_API || '__MAP_API__';
 const C = {
   c1:'#0B7F8C', c2:'#2CBFBF', c3:'#F2A413', c4:'#D96704', c5:'#BF3604',
@@ -22,7 +22,8 @@ const ZONE_C = {
 let suburbData  = null;
 let forecastData = null;
 let mapInstance = null;
-let curMapFuel  = 'ulp91';
+let curMapFuel   = 'ulp91';
+let curChartFuel = 'all'; /* FIX 4: shared chart fuel filter */
 
 /*  POSTCODE CENTROIDS  
 I used AI help in getting the coordinates */
@@ -93,9 +94,9 @@ async function loadData() {
   rSum();
   initSearch();
   initMap();
-  rGroupedBar();
-  rBollinger();
-  rScatter();
+  rGroupedBar(curChartFuel);
+  rBollinger(curChartFuel);
+  rScatter(curChartFuel);
   rTop3();
 }
 
@@ -106,6 +107,20 @@ function setFB(b, fuel) {
   b.classList.add('active');
   curMapFuel = fuel;
   buildMapLayer(fuel);
+}
+
+/* FIX 4: Chart fuel filter — applies to all 3 analytics charts */
+function setChartFuel(btn, fuel) {
+  document.querySelectorAll('.chart-ftog button').forEach(x => x.classList.remove('active'));
+  btn.classList.add('active');
+  curChartFuel = fuel;
+  ['chart-grouped','chart-bollinger','chart-scatter'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '';
+  });
+  rGroupedBar(fuel);
+  rBollinger(fuel);
+  rScatter(fuel);
 }
 
 /*  SUMMARY CARDS  */
@@ -141,12 +156,16 @@ function initSearch() {
   const res  = document.getElementById('sr');
   const subs = suburbData.suburbs || [];
 
+  function getMatches(q) {
+    return subs.filter(s =>
+      s.suburb_name.toLowerCase().includes(q) || s.postcode.includes(q)
+    ).slice(0, 8);
+  }
+
   inp.addEventListener('input', () => {
     const q = inp.value.trim().toLowerCase();
     if (q.length < 2) { res.style.display = 'none'; return; }
-    const m = subs.filter(s =>
-      s.suburb_name.toLowerCase().includes(q) || s.postcode.includes(q)
-    ).slice(0, 8);
+    const m = getMatches(q);
     if (!m.length) { res.style.display = 'none'; return; }
     res.innerHTML = m.map(s => `
       <div class="sri" onclick="selectSub('${s.postcode}','${s.suburb_name}')">
@@ -158,6 +177,20 @@ function initSearch() {
       </div>`).join('');
     res.style.display = 'block';
   });
+
+  /* FIX 1: Enter key zooms to first/exact match */
+  inp.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const q = inp.value.trim().toLowerCase();
+    if (!q) return;
+    const m = getMatches(q);
+    if (m.length) {
+      const exact = m.find(s => s.suburb_name.toLowerCase() === q || s.postcode === q) || m[0];
+      selectSub(exact.postcode, exact.suburb_name);
+    }
+    res.style.display = 'none';
+  });
+
   document.addEventListener('click', e => { if (!e.target.closest('#ss')) res.style.display = 'none'; });
 }
 
@@ -262,15 +295,39 @@ function buildMapLayer(fuel) {
       `).addTo(mapInstance);
     });
     mapInstance.on('mouseleave', 'sc', () => { mapInstance.getCanvas().style.cursor = ''; popup.remove(); });
+
+    /* FIX 2: Click keeps popup pinned until next click elsewhere */
+    let pinnedPopup = null;
+    mapInstance.on('click', 'sc', e => {
+      if (pinnedPopup) { pinnedPopup.remove(); pinnedPopup = null; }
+      const p = e.features[0].properties;
+      pinnedPopup = new mapboxgl.Popup({ closeButton: true, maxWidth: '220px' })
+        .setLngLat(e.lngLat)
+        .setHTML(`
+          <div class="pn">${p.suburb_name}</div>
+          <div class="pp">${p.postcode}</div>
+          <div class="pr"><span class="prl">ULP91 forecast</span><span class="prv" style="color:#0B7F8C">${Number(p.u91).toFixed(1)} cpl</span></div>
+          <div class="pr"><span class="prl">ULP95 forecast</span><span class="prv" style="color:#9A6800">${Number(p.u95).toFixed(1)} cpl</span></div>
+          <div class="pr"><span class="prl">Diesel forecast</span><span class="prv" style="color:#BF3604">${Number(p.dsl).toFixed(1)} cpl</span></div>
+          <span class="pz">${(p.zone || '').replace(/_/g, ' ')}</span>
+        `)
+        .addTo(mapInstance);
+    });
+    mapInstance.on('click', e => {
+      if (!mapInstance.queryRenderedFeatures(e.point, { layers: ['sc'] }).length) {
+        if (pinnedPopup) { pinnedPopup.remove(); pinnedPopup = null; }
+      }
+    });
   }
 }
 
 /* D3 CHARTS*/
 
 /*  1. GROUPED BAR: Current vs Forecast  */
-function rGroupedBar() {
+function rGroupedBar(fuelFilter) { fuelFilter = fuelFilter || curChartFuel;
   const sf     = forecastData.state_forecasts || suburbData.state_forecasts || {};
-  const fuels  = ['ulp91', 'ulp95', 'diesel'];
+  const allFuels = ['ulp91', 'ulp95', 'diesel'];
+  const fuels = fuelFilter === 'all' ? allFuels : [fuelFilter];
   const labels = { ulp91: 'ULP91', ulp95: 'ULP95', diesel: 'Diesel' };
   const data   = fuels.map(k => ({
     fuel:     labels[k],
@@ -335,9 +392,10 @@ function rGroupedBar() {
 }
 
 /*  2. BOLLINGER BANDS: Suburb price distribution  */
-function rBollinger() {
+function rBollinger(fuelFilter) { fuelFilter = fuelFilter || curChartFuel;
   const subs      = suburbData.suburbs || [];
-  const fuels     = ['ulp91', 'ulp95', 'diesel'];
+  const allFuels  = ['ulp91', 'ulp95', 'diesel'];
+  const fuels     = fuelFilter === 'all' ? allFuels : [fuelFilter];
   const fuelLabels = { ulp91: 'ULP91', ulp95: 'ULP95', diesel: 'Diesel' };
   const fuelCols   = { ulp91: C.c1,    ulp95: C.c3,    diesel: C.c5    };
 
@@ -431,9 +489,11 @@ function rBollinger() {
 }
 
 /*  3. SCATTER: ULP91 forecast vs petrol vehicle count  */
-function rScatter() {
+function rScatter(fuelFilter) { fuelFilter = fuelFilter || curChartFuel;
+  const fuel = (fuelFilter === 'all') ? 'ulp91' : fuelFilter;
+  const vehKey = fuel === 'diesel' ? 'diesel_vehicles' : 'petrol_vehicles';
   const subs = (suburbData.suburbs || [])
-    .filter(s => s.fuels?.ulp91?.forecast_cpl && s.petrol_vehicles > 0)
+    .filter(s => s.fuels?.[fuel]?.forecast_cpl && (s[vehKey] || s.petrol_vehicles) > 0)
     .slice(0, 120);
 
   const W  = document.getElementById('chart-scatter').offsetWidth || 500;
@@ -442,8 +502,9 @@ function rScatter() {
   const iW = W - mg.left - mg.right;
   const iH = H - mg.top  - mg.bottom;
 
-  const x     = d3.scaleLinear().domain([0, d3.max(subs, d => d.petrol_vehicles) * 1.05]).range([0, iW]);
-  const yVals = subs.map(d => d.fuels.ulp91.forecast_cpl);
+  const vehField = fuel === 'diesel' ? 'diesel_vehicles' : 'petrol_vehicles';
+  const x     = d3.scaleLinear().domain([0, d3.max(subs, d => (d[vehField]||d.petrol_vehicles||0)) * 1.05]).range([0, iW]);
+  const yVals = subs.map(d => d.fuels[fuel].forecast_cpl);
   const y     = d3.scaleLinear().domain([d3.min(yVals) * .98, d3.max(yVals) * 1.02]).range([iH, 0]);
 
   const svg = d3.select('#chart-scatter').append('svg')
@@ -455,14 +516,14 @@ function rScatter() {
     .select('.domain').remove();
 
   // Regression line
-  const xm  = d3.mean(subs, d => d.petrol_vehicles);
-  const ym  = d3.mean(subs, d => d.fuels.ulp91.forecast_cpl);
-  const num = d3.sum(subs, d => (d.petrol_vehicles - xm) * (d.fuels.ulp91.forecast_cpl - ym));
-  const den = d3.sum(subs, d => (d.petrol_vehicles - xm) ** 2);
+  const xm  = d3.mean(subs, d => d[vehField]||d.petrol_vehicles||0);
+  const ym  = d3.mean(subs, d => d.fuels[fuel].forecast_cpl);
+  const num = d3.sum(subs, d => ((d[vehField]||d.petrol_vehicles||0) - xm) * (d.fuels[fuel].forecast_cpl - ym));
+  const den = d3.sum(subs, d => ((d[vehField]||d.petrol_vehicles||0) - xm) ** 2);
   const slope = num / den;
   const intercept = ym - slope * xm;
-  const x1r = d3.min(subs, d => d.petrol_vehicles);
-  const x2r = d3.max(subs, d => d.petrol_vehicles);
+  const x1r = d3.min(subs, d => d[vehField]||d.petrol_vehicles||0);
+  const x2r = d3.max(subs, d => d[vehField]||d.petrol_vehicles||0);
 
   g.append('line')
     .attr('x1', x(x1r)).attr('y1', y(slope * x1r + intercept))
@@ -470,14 +531,16 @@ function rScatter() {
     .attr('stroke', C.txt3).attr('stroke-width', 1).attr('stroke-dasharray', '4,4').attr('opacity', .6);
 
   // Dots
+  const fuelLabel = { ulp91:'ULP91', ulp95:'ULP95', diesel:'Diesel' }[fuel];
   subs.forEach(d => {
     const col = ZONE_C[d.zone] || '#888';
+    const vehCount = d[vehField] || d.petrol_vehicles || 0;
     g.append('circle')
-      .attr('cx', x(d.petrol_vehicles)).attr('cy', y(d.fuels.ulp91.forecast_cpl))
+      .attr('cx', x(vehCount)).attr('cy', y(d.fuels[fuel].forecast_cpl))
       .attr('r', 4).attr('fill', col).attr('opacity', .72)
       .attr('stroke', '#fff').attr('stroke-width', .8)
       .style('cursor', 'pointer')
-      .on('mouseover', e => showTip(`<strong>${d.suburb_name}</strong>${d.postcode}<br>ULP91: ${d.fuels.ulp91.forecast_cpl.toFixed(1)} cpl<br>Petrol vehicles: ${(d.petrol_vehicles || 0).toLocaleString()}`, e))
+      .on('mouseover', e => showTip(`<strong>${d.suburb_name}</strong>${d.postcode}<br>${fuelLabel}: ${d.fuels[fuel].forecast_cpl.toFixed(1)} cpl<br>Vehicles: ${vehCount.toLocaleString()}`, e))
       .on('mousemove', moveTip).on('mouseout', hideTip)
       .on('click', () => flyTo(d.postcode));
   });
@@ -487,9 +550,9 @@ function rScatter() {
   g.append('g').attr('class', 'd3-axis')
     .call(d3.axisLeft(y).ticks(5).tickFormat(v => v.toFixed(0)));
   g.append('text').attr('x', iW / 2).attr('y', iH + 36)
-    .attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', C.txt3).text('Petrol vehicles registered');
+    .attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', C.txt3).text(fuel === 'diesel' ? 'Diesel vehicles registered' : 'Petrol vehicles registered');
   g.append('text').attr('x', -iH / 2).attr('y', -40).attr('transform', 'rotate(-90)')
-    .attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', C.txt3).text('ULP91 forecast (cpl)');
+    .attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', C.txt3).text(fuelLabel + ' forecast (cpl)');
 }
 
 /*  TOP 3  */
@@ -600,7 +663,7 @@ function toggleDark() {
   setTimeout(() => {
     ['chart-grouped','chart-bollinger','chart-scatter','chart-history']
       .forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
-    rGroupedBar(); rBollinger(); rScatter();
+    rGroupedBar(curChartFuel); rBollinger(curChartFuel); rScatter(curChartFuel);
     if (window._actualsData) rPriceHistory(window._actualsData, window._forecastData);
   }, 350);
 }
@@ -609,7 +672,7 @@ function updateDarkIcon() {
   const btn = document.getElementById('darkToggle');
   if (!btn) return;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  btn.textContent = isDark ? '☀' : '🌙';
+  btn.textContent = isDark ? '☼' : '࣪ ִֶָ☾.';
   btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
 }
 
@@ -664,7 +727,7 @@ function rPriceHistory(rows, fcPoint) {
   const allRows  = [...rows, fcPoint].filter(Boolean);
   const W  = el.offsetWidth || 700;
   const H  = 280;
-  const mg = { top: 16, right: 28, bottom: 48, left: 54 };
+  const mg = { top: 16, right: 60, bottom: 48, left: 54 }; /* FIX 3: extra right margin for forecast dot */
   const iW = W - mg.left - mg.right;
   const iH = H - mg.top  - mg.bottom;
 
@@ -672,8 +735,10 @@ function rPriceHistory(rows, fcPoint) {
   const colors = { ulp91: '#0B7F8C', ulp95: '#F2A413', diesel: '#BF3604' };
   const labels = { ulp91: 'ULP91', ulp95: 'ULP95', diesel: 'Diesel' };
 
+  /* FIX 3b: explicitly include fcPoint in domain so dashed line is never cut off */
+  const allDates = allRows.map(d => d.date).filter(Boolean);
   const x = d3.scaleTime()
-    .domain(d3.extent(allRows, d => d.date))
+    .domain([d3.min(allDates), d3.max(allDates)])
     .range([0, iW]);
 
   const allVals = allRows.flatMap(r => fuels.map(f => r[f])).filter(v => v && !isNaN(v));
