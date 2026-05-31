@@ -427,3 +427,32 @@ footer strong{color:#fff}
   background: rgba(11,127,140,.2); 
   color: #2CBFBF; 
 }
+
+/* CHART FUEL FILTER TOGGLE */
+.chart-ftog {
+  display: flex;
+  overflow: hidden;
+  border-radius: 7px;
+  border: 1px solid var(--bdr);
+  width: fit-content;
+  margin-bottom: 14px;
+  box-shadow: var(--sh);
+}
+.chart-ftog button {
+  border: none;
+  background: transparent;
+  padding: 6px 16px;
+  font-family: var(--f);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--txt2);
+  border-right: 1px solid var(--bdr);
+  transition: all .15s;
+}
+.chart-ftog button:last-child { border-right: none; }
+.chart-ftog button.active     { background: var(--c1); color: #fff; }
+.chart-ftog button:hover:not(.active) { background: var(--bg); }
+[data-theme="dark"] .chart-ftog { border-color: var(--bdr); }
+[data-theme="dark"] .chart-ftog button { color: var(--txt2); }
+[data-theme="dark"] .chart-ftog button:hover:not(.active) { background: var(--dbg3, #1a1e28); }
