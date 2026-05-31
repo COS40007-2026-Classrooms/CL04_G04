@@ -67,22 +67,10 @@ jobs:
         run: |
           dvc remote modify origin --local access_key_id     "$DAGSHUB_USERNAME"
           dvc remote modify origin --local secret_access_key "$DAGSHUB_TOKEN"
-          dvc pull data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025.csv.dvc --no-run-cache
-          echo "Fleet CSV ready: $(wc -l < data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025.csv) rows"
-      
-      - name: Pull DVC data
-        env:
-          DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-          DAGSHUB_TOKEN:    ${{ secrets.DAGSHUB_TOKEN }}
-        run: |
-          dvc remote modify origin --local access_key_id     "$DAGSHUB_USERNAME"
-          dvc remote modify origin --local secret_access_key "$DAGSHUB_TOKEN"
-          echo "DVC files found:"
-          find . -name "*.dvc" | grep -v ".dvc/cache"
-          dvc pull --no-run-cache
-          echo "Files in data/:"
-          ls data/*.csv 2>/dev/null || echo "No CSVs in data/"
-          ls *.csv 2>/dev/null || echo "No CSVs in root"
+          dcv pull data/ --force
+          echo "CSVs IN DATA/:"
+          ls data/*.csv 2>/dev/null | while read f; do echo "$f: $(wc -l < $f) rows"; done
+
 
       #  Run retraining pipeline (fetches live prices, checks accuracy, retrains)
       - name: Run retraining pipeline
