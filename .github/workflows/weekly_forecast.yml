@@ -55,7 +55,7 @@ jobs:
           pip install --upgrade pip
           pip install pandas numpy scikit-learn h5py pdfplumber matplotlib scipy dvc dvc-s3
 
-      #  Ensure data/models/reports dirs exist 
+      #  Ensure data/models/reports and dvc temp dirs exist 
       - name: Create directories
         run: |
           mkdir -p data models reports .dvc/tmp
