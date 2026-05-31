@@ -446,7 +446,7 @@ def load_fleet_postcodes():
       total_vehicles   (all registered)
       ev_penetration_pct, diesel_fraction_pct, fleet_type
     """
-    csvs = sorted(ROOT_DIR.glob('whole_fleet*postcode*.csv'))
+    csvs = sorted(DAT_DIR.glob('whole_fleet*postcode*.csv'))
     if not csvs:
         '''raise FileNotFoundError('Cannot find whole_fleet*postcode*.csv in script folder')'''
         raise FileNotFoundError('Cannot find whole_fleet*postcode*.csv in repo root folder')

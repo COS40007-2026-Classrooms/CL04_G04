@@ -68,7 +68,9 @@ jobs:
           dvc remote modify origin --local access_key_id     "$DAGSHUB_USERNAME"
           dvc remote modify origin --local secret_access_key "$DAGSHUB_TOKEN"
           dvc pull "data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025.csv.dvc" --force
-          echo "FILE PULLED"
+          dvc pull "data/Australian Petroleum Statistics - Data Extract January 2026 - Australian fuel prices.csv.dvc" --force
+          dvc pull "data/Australian Petroleum Statistics - Data Extract January 2026 - Sales by state and territory.csv.dvc" --force
+          echo "FILEs PULLED"
           echo "Fleet CSV: $(wc -l < data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025.csv) rows"
           ls data/*.csv 2>/dev/null | while read f; do echo "$f: $(wc -l < $f) rows"; done
 
