@@ -65,10 +65,9 @@ jobs:
           DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
           DAGSHUB_TOKEN:    ${{ secrets.DAGSHUB_TOKEN }}
         run: |
-          pip install dvc dvc-s3
           dvc remote modify origin --local access_key_id     "$DAGSHUB_USERNAME"
           dvc remote modify origin --local secret_access_key "$DAGSHUB_TOKEN"
-          dvc pull data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025_csv
+          dvc pull data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025_csv.dvc --no-run-cache
           echo "Fleet CSV ready: $(wc -l < data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025.csv) rows"
       
       #  Run retraining pipeline (fetches live prices, checks accuracy, retrains)
