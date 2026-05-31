@@ -65,9 +65,9 @@ jobs:
           DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
           DAGSHUB_TOKEN:    ${{ secrets.DAGSHUB_TOKEN }}
         run: |
-          dcv remote modify origin --local access_key_id     "$DAGSHUB_USERNAME"
-          dcv remote modify origin --local secret_access_key "$DAGSHUB_TOKEN"
-          dcv pull data/ --force
+          dvc remote modify origin --local access_key_id     "$DAGSHUB_USERNAME"
+          dvc remote modify origin --local secret_access_key "$DAGSHUB_TOKEN"
+          dvc pull data/ --force
           echo "CSVs IN DATA/:"
           ls data/*.csv 2>/dev/null | while read f; do echo "$f: $(wc -l < $f) rows"; done
 
