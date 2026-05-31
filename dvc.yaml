@@ -1,9 +1,22 @@
 stages:
-  train:
-    cmd: python model.py
+  fetch_prices:
+    cmd: python code/finalModel.py
     deps:
-      - model.py
-      - data
+      - code/finalModel.py
+      - data/actuals_history.csv
     outs:
-      - model_results.png
-      - metrics.txt
+      - models/ulp91_price_model.h5
+      - models/ulp95_price_model.h5
+      - models/diesel_price_model.h5
+      - reports/price_forecast.json
+
+  suburb_forecast:
+    cmd: python code/suburbfinalModel.py
+    deps:
+      - code/suburbfinalModel.py
+      - models/ulp91_price_model.h5
+      - reports/price_forecast.json
+      - data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025.csv
+    outs:
+      - reports/suburb_price_forecast.json
+      - reports/suburb_price_forecast.csv
