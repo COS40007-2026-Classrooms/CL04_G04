@@ -26,9 +26,9 @@ on:
 
 env:
   PYTHON_VERSION: '3.11'
-  MAPE_THRESHOLD: '3.0'    # <- edit to tighten/loosen accuracy gat
-  DA_THRESHOLD:   '55.0'   # <- directional accuracy minimum %
-  MAE_THRESHOLD:  '6.0'    # <- max MAE in cents per litre
+  MAPE_THRESHOLD: '3.0' # <- edit to tighten/loosen accuracy gat
+  DA_THRESHOLD:   '55.0' # <- directional accuracy minimum %
+  MAE_THRESHOLD:  '6.0' # <- max MAE in cents per litre
 
 jobs:
   forecast_and_retrain:
@@ -53,13 +53,24 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pandas numpy scikit-learn h5py pdfplumber matplotlib scipy
+          pip install pandas numpy scikit-learn h5py pdfplumber matplotlib scipy dvc dvc-s3
 
       #  Ensure data/models/reports dirs exist 
       - name: Create directories
         run: |
-          mkdir -p data models reports
+          mkdir -p data models reports .dvc/tmp
 
+      - name: Pull DVC data
+        env:
+          DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+          DAGSHUB_TOKEN:    ${{ secrets.DAGSHUB_TOKEN }}
+        run: |
+          pip install dvc dvc-s3
+          dvc remote modify origin --local access_key_id     "$DAGSHUB_USERNAME"
+          dvc remote modify origin --local secret_access_key "$DAGSHUB_TOKEN"
+          dvc pull data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025_csv.dvc
+          echo "Fleet CSV ready: $(wc -l < data/whole_fleet_vehicle_registration_snapshot_by_postcode_q4_2025.csv) rows"
+      
       #  Run retraining pipeline (fetches live prices, checks accuracy, retrains)
       - name: Run retraining pipeline
         id: retrain
