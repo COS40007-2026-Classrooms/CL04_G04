@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-31T10:55:41.057523",
+  "generated_at": "2026-06-03T15:57:43.480238",
   "data_seed": "Victoria Servo Saver API (live station data)",
   "excise_cut_active": true,
   "excise_cut_cpl": 32.0,
@@ -7,31 +7,31 @@
   "forecasts": {
     "ulp91": {
       "fuel_type": "ULP91",
-      "forecast_date": "2026-06-07",
-      "week_end": "2026-06-13",
-      "pred_price_cpl": 170.9,
-      "last_actual_cpl": 179.9,
-      "change_cpl": -9.0,
+      "forecast_date": "2026-06-10",
+      "week_end": "2026-06-16",
+      "pred_price_cpl": 169.0,
+      "last_actual_cpl": 177.9,
+      "change_cpl": -8.9,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     },
     "ulp95": {
       "fuel_type": "ULP95",
-      "forecast_date": "2026-06-07",
-      "week_end": "2026-06-13",
-      "pred_price_cpl": 188.8,
-      "last_actual_cpl": 196.9,
-      "change_cpl": -8.1,
+      "forecast_date": "2026-06-10",
+      "week_end": "2026-06-16",
+      "pred_price_cpl": 184.2,
+      "last_actual_cpl": 193.9,
+      "change_cpl": -9.7,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     },
     "diesel": {
       "fuel_type": "DIESEL",
-      "forecast_date": "2026-06-07",
-      "week_end": "2026-06-13",
-      "pred_price_cpl": 232.4,
-      "last_actual_cpl": 221.3,
-      "change_cpl": 11.1,
+      "forecast_date": "2026-06-10",
+      "week_end": "2026-06-16",
+      "pred_price_cpl": 207.0,
+      "last_actual_cpl": 217.9,
+      "change_cpl": -10.9,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     }
@@ -39,62 +39,62 @@
   "metrics": {
     "ulp91": {
       "holdout": {
-        "mae": 3.549,
-        "rmse": 8.957,
-        "mape": 1.796,
+        "mae": 3.589,
+        "rmse": 8.978,
+        "mape": 1.819,
         "r2": 0.3661,
         "da": 60.98,
         "f1": 0.9752,
-        "pearson_r": 0.6734,
-        "theils_u": 0.8788,
+        "pearson_r": 0.6736,
+        "theils_u": 0.8822,
         "within_2pct": 83.06,
         "within_5pct": 95.16
       },
       "cv": {
-        "mape_mean": 1.784,
-        "mape_std": 0.193,
-        "r2_mean": 0.8006,
-        "r2_std": 0.1998
+        "mape_mean": 1.774,
+        "mape_std": 0.201,
+        "r2_mean": 0.8008,
+        "r2_std": 0.2014
       }
     },
     "ulp95": {
       "holdout": {
-        "mae": 2.587,
-        "rmse": 9.028,
-        "mape": 1.172,
-        "r2": 0.3252,
+        "mae": 2.659,
+        "rmse": 9.064,
+        "mape": 1.209,
+        "r2": 0.3242,
         "da": 60.98,
         "f1": 0.9667,
-        "pearson_r": 0.6641,
-        "theils_u": 0.8836,
-        "within_2pct": 91.13,
+        "pearson_r": 0.6628,
+        "theils_u": 0.8883,
+        "within_2pct": 90.32,
         "within_5pct": 93.55
       },
       "cv": {
         "mape_mean": 1.338,
-        "mape_std": 0.3,
-        "r2_mean": 0.7933,
-        "r2_std": 0.224
+        "mape_std": 0.286,
+        "r2_mean": 0.7929,
+        "r2_std": 0.2267
       }
     },
     "diesel": {
       "holdout": {
-        "mae": 3.33,
-        "rmse": 14.506,
-        "mape": 1.455,
-        "r2": 0.5094,
+        "mae": 3.411,
+        "rmse": 14.546,
+        "mape": 1.491,
+        "r2": 0.5123,
         "da": 60.98,
-        "f1": 0.9667,
-        "pearson_r": 0.7359,
-        "theils_u": 0.9844,
-        "within_2pct": 91.13,
-        "within_5pct": 93.55
+        "f1": 0.9623,
+        "pearson_r": 0.7393,
+        "theils_u": 0.987,
+        "within_2pct": 90.32,
+        "within_5pct": 92.74
       },
       "cv": {
-        "mape_mean": 1.269,
-        "mape_std": 0.394,
-        "r2_mean": 0.8521,
-        "r2_std": 0.1731
+        "mape_mean": 1.276,
+        "mape_std": 0.391,
+        "r2_mean": 0.8538,
+        "r2_std": 0.1715
       }
     }
   }
