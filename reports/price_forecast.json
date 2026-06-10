@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-03T15:57:43.480238",
+  "generated_at": "2026-06-10T14:33:47.198181",
   "data_seed": "Victoria Servo Saver API (live station data)",
   "excise_cut_active": true,
   "excise_cut_cpl": 32.0,
@@ -7,31 +7,31 @@
   "forecasts": {
     "ulp91": {
       "fuel_type": "ULP91",
-      "forecast_date": "2026-06-10",
-      "week_end": "2026-06-16",
-      "pred_price_cpl": 169.0,
-      "last_actual_cpl": 177.9,
-      "change_cpl": -8.9,
+      "forecast_date": "2026-06-17",
+      "week_end": "2026-06-23",
+      "pred_price_cpl": 178.4,
+      "last_actual_cpl": 169.9,
+      "change_cpl": 8.5,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     },
     "ulp95": {
       "fuel_type": "ULP95",
-      "forecast_date": "2026-06-10",
-      "week_end": "2026-06-16",
-      "pred_price_cpl": 184.2,
-      "last_actual_cpl": 193.9,
-      "change_cpl": -9.7,
+      "forecast_date": "2026-06-17",
+      "week_end": "2026-06-23",
+      "pred_price_cpl": 196.2,
+      "last_actual_cpl": 186.9,
+      "change_cpl": 9.3,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     },
     "diesel": {
       "fuel_type": "DIESEL",
-      "forecast_date": "2026-06-10",
-      "week_end": "2026-06-16",
-      "pred_price_cpl": 207.0,
-      "last_actual_cpl": 217.9,
-      "change_cpl": -10.9,
+      "forecast_date": "2026-06-17",
+      "week_end": "2026-06-23",
+      "pred_price_cpl": 212.8,
+      "last_actual_cpl": 208.8,
+      "change_cpl": 4.0,
       "excise_active": true,
       "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
     }
@@ -39,62 +39,62 @@
   "metrics": {
     "ulp91": {
       "holdout": {
-        "mae": 3.589,
-        "rmse": 8.978,
-        "mape": 1.819,
-        "r2": 0.3661,
+        "mae": 3.76,
+        "rmse": 9.194,
+        "mape": 1.92,
+        "r2": 0.3431,
         "da": 60.98,
-        "f1": 0.9752,
-        "pearson_r": 0.6736,
-        "theils_u": 0.8822,
-        "within_2pct": 83.06,
-        "within_5pct": 95.16
+        "f1": 0.971,
+        "pearson_r": 0.6618,
+        "theils_u": 0.8974,
+        "within_2pct": 82.26,
+        "within_5pct": 94.35
       },
       "cv": {
-        "mape_mean": 1.774,
-        "mape_std": 0.201,
-        "r2_mean": 0.8008,
-        "r2_std": 0.2014
+        "mape_mean": 1.789,
+        "mape_std": 0.205,
+        "r2_mean": 0.7957,
+        "r2_std": 0.213
       }
     },
     "ulp95": {
       "holdout": {
-        "mae": 2.659,
-        "rmse": 9.064,
-        "mape": 1.209,
-        "r2": 0.3242,
+        "mae": 2.846,
+        "rmse": 9.316,
+        "mape": 1.31,
+        "r2": 0.2961,
         "da": 60.98,
-        "f1": 0.9667,
-        "pearson_r": 0.6628,
-        "theils_u": 0.8883,
-        "within_2pct": 90.32,
-        "within_5pct": 93.55
+        "f1": 0.9623,
+        "pearson_r": 0.6469,
+        "theils_u": 0.9064,
+        "within_2pct": 89.52,
+        "within_5pct": 92.74
       },
       "cv": {
-        "mape_mean": 1.338,
-        "mape_std": 0.286,
-        "r2_mean": 0.7929,
-        "r2_std": 0.2267
+        "mape_mean": 1.353,
+        "mape_std": 0.276,
+        "r2_mean": 0.7869,
+        "r2_std": 0.2404
       }
     },
     "diesel": {
       "holdout": {
-        "mae": 3.411,
-        "rmse": 14.546,
-        "mape": 1.491,
-        "r2": 0.5123,
+        "mae": 3.53,
+        "rmse": 14.613,
+        "mape": 1.548,
+        "r2": 0.5094,
         "da": 60.98,
-        "f1": 0.9623,
-        "pearson_r": 0.7393,
-        "theils_u": 0.987,
-        "within_2pct": 90.32,
-        "within_5pct": 92.74
+        "f1": 0.958,
+        "pearson_r": 0.7395,
+        "theils_u": 0.9909,
+        "within_2pct": 89.52,
+        "within_5pct": 91.94
       },
       "cv": {
-        "mape_mean": 1.276,
+        "mape_mean": 1.295,
         "mape_std": 0.391,
-        "r2_mean": 0.8538,
-        "r2_std": 0.1715
+        "r2_mean": 0.8536,
+        "r2_std": 0.1738
       }
     }
   }

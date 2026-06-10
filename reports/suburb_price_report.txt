@@ -1,9 +1,9 @@
 ========================================================================
   VIC FUEL PRICE FORECAST  --  SUBURB LEVEL (per postcode)
 ========================================================================
-  Generated  : 03 June 2026 15:57
+  Generated  : 10 June 2026 14:33
   Data source: Fair Fuel Open Data API (Service Victoria, 24hr delay)
-  Forecast   : 2026-06-10 to 2026-06-16
+  Forecast   : 2026-06-17 to 2026-06-23
   Postcodes  : 708
 
 ------------------------------------------------------------------------
@@ -11,74 +11,74 @@
 ------------------------------------------------------------------------
   Fuel        Current cpl  Forecast cpl   Change
   ----------------------------------------------
-  ULP91             177.9         169.0     -8.9
-  ULP95             193.9         184.2     -9.7
-  DIESEL            217.9         207.0    -10.9
+  ULP91             169.9         178.4     +8.5
+  ULP95             186.9         196.2     +9.3
+  DIESEL            208.8         212.8     +4.0
 
 ------------------------------------------------------------------------
   SUBURB FORECASTS  --  ULP91 (Regular Unleaded 91)
 ------------------------------------------------------------------------
    Postcode Suburb                 Zone            Petrol Veh  Diesel Veh  Curr cpl  Fcst cpl   Spread Src       
   ------------------------------------------------------------------------------------
-       3029 Hoppers Crossing       inner_metro         91,799      25,678     173.4     164.5    -4.50 live      
-       3064 Craigieburn            inner_metro         77,467      20,588     179.8     170.9    +1.90 live      
-       3977 Cranbourne South       regional_vic        71,613      22,795     173.5     164.6    -4.40 live      
-       3030 Point Cook             inner_metro         71,566      19,663     177.9     169.0    +0.00 live      
-       3350 Ballarat               middle_metro        42,968      15,497     174.4     165.5    -3.50 live      
-       3978 Cranbourne West        regional_vic        40,734      10,350     174.9     166.0    -3.00 live      
-       3175 Dandenong              inner_metro         40,105      21,589     173.9     165.0    -4.00 live      
-       3023 Deer Park              inner_metro         39,034      10,599     171.9     163.0    -6.00 live      
-       3150 Glen Waverley          inner_metro         37,315       7,438     173.5     164.6    -4.40 live      
-       3216 Geelong                middle_metro        36,102      11,380     172.9     164.0    -5.00 live      
-       3805 Narre Warren South     regional_vic        35,803      10,141     175.4     166.5    -2.50 live      
-       3810 Pakenham               regional_vic        35,268      13,865     173.7     164.8    -4.20 live      
-       3806 Berwick                regional_vic        33,992       9,757     179.7     170.8    +1.80 live      
-       3199 Frankston              inner_metro         33,588       9,985     169.9     161.0    -8.00 live      
-       3021 Sunshine North         inner_metro         31,894       5,336     175.9     167.0    -2.00 live      
-       3037 Delahey                inner_metro         30,667       7,482     173.5     164.6    -4.40 live      
-       3073 Reservoir              inner_metro         29,403       5,830     167.4     158.5   -10.50 live      
-       3754 Doreen                 regional_vic        28,766       8,298     179.9     171.0    +2.00 live      
-       3020 Sunshine               inner_metro         28,451       8,523     172.7     163.8    -5.20 live      
-       3136 Croydon                inner_metro         28,353       7,443     176.2     167.3    -1.70 live      
-       3550 Bendigo                regional_vic        27,567      11,441     176.9     168.0    -1.00 live      
-       3429 Sunbury                middle_metro        26,796       9,400     173.5     164.6    -4.40 live      
-       3338 Melton                 middle_metro        25,662       7,487     173.9     165.0    -4.00 live      
-       3156 Boronia                inner_metro         25,167       8,090     171.9     163.0    -6.00 live      
-       3337 Melton South           middle_metro        25,162       9,107     179.5     170.6    +1.60 live      
-       3690 Wodonga                regional_vic        24,976      13,841     179.8     170.9    +1.90 live      
-       3551 Bendigo                regional_vic        24,424      14,781     179.9     171.0    +2.00 live      
-       3174 Noble Park North       inner_metro         24,004       4,593     173.9     165.0    -4.00 live      
-       3195 Mordialloc             inner_metro         23,746       8,506     179.0     170.1    +1.10 live      
-       3024 Werribee South         inner_metro         23,379       4,788     185.9     177.0    +8.00 live      
-       3280 Warrnambool            middle_metro        22,663      10,781     176.9     168.0    -1.00 live      
-       3134 Ringwood North         inner_metro         22,533       6,086     179.5     170.6    +1.60 live      
-       3500 Mildura                middle_metro        22,327      12,065     179.9     171.0    +2.00 live      
-       3844 Traralgon              regional_vic        22,253      11,531     173.9     165.0    -4.00 live      
-       3149 Mount Waverley         inner_metro         21,999       5,453     173.9     165.0    -4.00 live      
-       3178 Rowville               inner_metro         21,995       5,725     173.9     165.0    -4.00 live      
-       3630 Shepparton             regional_vic        21,916      11,140     175.9     167.0    -2.00 live      
-       3076 Lalor                  inner_metro         21,779       7,448     179.7     170.8    +1.80 live      
-       3043 Tullamarine            inner_metro         21,524       8,683     173.5     164.6    -4.40 live      
-       3072 Preston                inner_metro         21,446       4,693     173.5     164.6    -4.40 live      
-       3152 Knox City              inner_metro         21,426       4,205     173.7     164.8    -4.20 live      
-       3173 Noble Park             inner_metro         20,998       5,719     173.9     165.0    -4.00 live      
-       3046 Glenroy North          inner_metro         20,858       4,374     173.5     164.6    -4.40 live      
-       3058 Coburg                 inner_metro         20,717       4,597     173.3     164.4    -4.60 live      
-       3130 Nunawading             inner_metro         20,143       3,811     179.5     170.6    +1.60 live      
-       3336 Melton                 middle_metro        19,959       4,974     181.9     173.0    +4.00 zone_mod  
-       3750 South Morang           regional_vic        19,950       4,695     186.9     178.0    +9.00 live      
-       3170 Mulgrave               inner_metro         19,643       4,555     173.5     164.6    -4.40 live      
-       3083 Bundoora               inner_metro         19,538       4,781     165.5     156.6   -12.40 live      
-       3217 Grovedale              middle_metro        18,924       5,470     175.9     167.0    -2.00 live      
+       3029 Hoppers Crossing       inner_metro         91,799      25,678     168.9     177.4    -1.00 live      
+       3064 Craigieburn            inner_metro         77,467      20,588     171.9     180.4    +2.00 live      
+       3977 Cranbourne South       regional_vic        71,613      22,795     165.9     174.4    -4.00 live      
+       3030 Point Cook             inner_metro         71,566      19,663     171.9     180.4    +2.00 live      
+       3350 Ballarat               middle_metro        42,968      15,497     167.6     176.1    -2.30 live      
+       3978 Cranbourne West        regional_vic        40,734      10,350     165.8     174.3    -4.10 live      
+       3175 Dandenong              inner_metro         40,105      21,589     163.9     172.4    -6.00 live      
+       3023 Deer Park              inner_metro         39,034      10,599     162.9     171.4    -7.00 live      
+       3150 Glen Waverley          inner_metro         37,315       7,438     165.9     174.4    -4.00 live      
+       3216 Geelong                middle_metro        36,102      11,380     163.9     172.4    -6.00 live      
+       3805 Narre Warren South     regional_vic        35,803      10,141     171.6     180.1    +1.70 live      
+       3810 Pakenham               regional_vic        35,268      13,865     165.2     173.7    -4.70 live      
+       3806 Berwick                regional_vic        33,992       9,757     170.9     179.4    +1.00 live      
+       3199 Frankston              inner_metro         33,588       9,985     160.8     169.3    -9.10 live      
+       3021 Sunshine North         inner_metro         31,894       5,336     169.9     178.4    +0.00 live      
+       3037 Delahey                inner_metro         30,667       7,482     165.9     174.4    -4.00 live      
+       3073 Reservoir              inner_metro         29,403       5,830     159.8     168.3   -10.10 live      
+       3754 Doreen                 regional_vic        28,766       8,298     171.9     180.4    +2.00 live      
+       3020 Sunshine               inner_metro         28,451       8,523     165.9     174.4    -4.00 live      
+       3136 Croydon                inner_metro         28,353       7,443     168.9     177.4    -1.00 live      
+       3550 Bendigo                regional_vic        27,567      11,441     167.9     176.4    -2.00 live      
+       3429 Sunbury                middle_metro        26,796       9,400     169.9     178.4    +0.00 live      
+       3338 Melton                 middle_metro        25,662       7,487     165.9     174.4    -4.00 live      
+       3156 Boronia                inner_metro         25,167       8,090     165.7     174.2    -4.20 live      
+       3337 Melton South           middle_metro        25,162       9,107     171.8     180.3    +1.90 live      
+       3690 Wodonga                regional_vic        24,976      13,841     177.9     186.4    +8.00 live      
+       3551 Bendigo                regional_vic        24,424      14,781     169.9     178.4    +0.00 live      
+       3174 Noble Park North       inner_metro         24,004       4,593     165.9     174.4    -4.00 live      
+       3195 Mordialloc             inner_metro         23,746       8,506     169.7     178.2    -0.20 live      
+       3024 Werribee South         inner_metro         23,379       4,788     177.9     186.4    +8.00 live      
+       3280 Warrnambool            middle_metro        22,663      10,781     169.9     178.4    +0.00 live      
+       3134 Ringwood North         inner_metro         22,533       6,086     171.8     180.3    +1.90 live      
+       3500 Mildura                middle_metro        22,327      12,065     171.9     180.4    +2.00 live      
+       3844 Traralgon              regional_vic        22,253      11,531     167.9     176.4    -2.00 live      
+       3149 Mount Waverley         inner_metro         21,999       5,453     165.9     174.4    -4.00 live      
+       3178 Rowville               inner_metro         21,995       5,725     169.9     178.4    +0.00 live      
+       3630 Shepparton             regional_vic        21,916      11,140     171.9     180.4    +2.00 live      
+       3076 Lalor                  inner_metro         21,779       7,448     171.9     180.4    +2.00 live      
+       3043 Tullamarine            inner_metro         21,524       8,683     167.9     176.4    -2.00 live      
+       3072 Preston                inner_metro         21,446       4,693     165.8     174.3    -4.10 live      
+       3152 Knox City              inner_metro         21,426       4,205     169.9     178.4    +0.00 live      
+       3173 Noble Park             inner_metro         20,998       5,719     166.4     174.9    -3.50 live      
+       3046 Glenroy North          inner_metro         20,858       4,374     169.4     177.9    -0.50 live      
+       3058 Coburg                 inner_metro         20,717       4,597     165.9     174.4    -4.00 live      
+       3130 Nunawading             inner_metro         20,143       3,811     171.9     180.4    +2.00 live      
+       3336 Melton                 middle_metro        19,959       4,974     173.9     182.4    +4.00 zone_mod  
+       3750 South Morang           regional_vic        19,950       4,695     179.9     188.4   +10.00 live      
+       3170 Mulgrave               inner_metro         19,643       4,555     165.9     174.4    -4.00 live      
+       3083 Bundoora               inner_metro         19,538       4,781     157.8     166.3   -12.10 live      
+       3217 Grovedale              middle_metro        18,924       5,470     175.9     184.4    +6.00 live      
   ... (658 more postcodes in CSV)
 
 ------------------------------------------------------------------------
   ZONE SUMMARY  --  ULP91 average forecast by zone
 ------------------------------------------------------------------------
-  inner_metro     : n= 183  mean=168.0 cpl  min=156.6  max=191.0
-  middle_metro    : n= 192  mean=173.7 cpl  min=161.0  max=217.0
-  regional_vic    : n= 320  mean=178.9 cpl  min=159.1  max=321.0
-  rural_remote    : n=  13  mean=190.2 cpl  min=189.0  max=194.0
+  inner_metro     : n= 183  mean=177.9 cpl  min=166.3  max=208.4
+  middle_metro    : n= 192  mean=184.4 cpl  min=168.4  max=234.4
+  regional_vic    : n= 320  mean=189.7 cpl  min=168.7  max=338.4
+  rural_remote    : n=  13  mean=199.6 cpl  min=198.4  max=203.4
 
   SPREAD MODEL
   Suburb forecast = State forecast + Postcode spread
