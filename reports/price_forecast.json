@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-10T14:33:47.198181",
-  "data_seed": "Victoria Servo Saver API (live station data)",
+  "generated_at": "2026-06-17T14:33:45.184462",
+  "data_seed": "APS quarterly + ACCC hardcoded anchor (22-Apr-2026)",
   "excise_cut_active": true,
   "excise_cut_cpl": 32.0,
   "excise_cut_ends": "2026-06-30",
@@ -9,31 +9,31 @@
       "fuel_type": "ULP91",
       "forecast_date": "2026-06-17",
       "week_end": "2026-06-23",
-      "pred_price_cpl": 178.4,
+      "pred_price_cpl": 173.8,
       "last_actual_cpl": 169.9,
-      "change_cpl": 8.5,
+      "change_cpl": 3.9,
       "excise_active": true,
-      "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
+      "data_source": "API_actual"
     },
     "ulp95": {
       "fuel_type": "ULP95",
       "forecast_date": "2026-06-17",
       "week_end": "2026-06-23",
-      "pred_price_cpl": 196.2,
+      "pred_price_cpl": 190.8,
       "last_actual_cpl": 186.9,
-      "change_cpl": 9.3,
+      "change_cpl": 3.9,
       "excise_active": true,
-      "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
+      "data_source": "API_actual"
     },
     "diesel": {
       "fuel_type": "DIESEL",
       "forecast_date": "2026-06-17",
       "week_end": "2026-06-23",
-      "pred_price_cpl": 212.8,
+      "pred_price_cpl": 209.5,
       "last_actual_cpl": 208.8,
-      "change_cpl": 4.0,
+      "change_cpl": 0.7,
       "excise_active": true,
-      "data_source": "Fair Fuel Open Data API (Service Victoria, 24hr delay)"
+      "data_source": "API_actual"
     }
   },
   "metrics": {

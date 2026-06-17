@@ -1,10 +1,10 @@
 ====================================================================
   VIC FUEL PRICE FORECAST  --  1-WEEK AHEAD
 ====================================================================
-  Generated : 10 June 2026 14:33
+  Generated : 17 June 2026 14:33
   Model     : Ridge Regression (alpha=1.0)
   CV method : TimeSeriesSplit (5 folds)
-  Data seed : Victoria Servo Saver API (live station data)
+  Data seed : APS quarterly + ACCC hardcoded anchor (22-Apr-2026)
   Target    : Melbourne retail pump price (cpl)
 
 --------------------------------------------------------------------
@@ -13,9 +13,9 @@
 
   Fuel        Current cpl  Forecast cpl   Change  Week
   --------------------------------------------------------------------
-  ULP91             169.9         178.4     +8.5  ^ 2026-06-17 to 2026-06-23
-  ULP95             186.9         196.2     +9.3  ^ 2026-06-17 to 2026-06-23
-  DIESEL            208.8         212.8     +4.0  ^ 2026-06-17 to 2026-06-23
+  ULP91             169.9         173.8     +3.9  ^ 2026-06-17 to 2026-06-23
+  ULP95             186.9         190.8     +3.9  ^ 2026-06-17 to 2026-06-23
+  DIESEL            208.8         209.5     +0.7  ^ 2026-06-17 to 2026-06-23
 
   * Excise cut of 32 cpl active 1 Apr - 30 Jun 2026
     Underlying prices are ~32 cpl higher without the cut
